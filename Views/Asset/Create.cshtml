@@ -1,0 +1,139 @@
+﻿@model CreateAssetViewModel
+
+@{
+    ViewData["Title"] = "Create Asset";
+}
+
+<section class="container my-4">
+    <h1 class="mb-3">@ViewData["Title"]</h1>
+    <h4 class="mb-4">Add a new Asset</h4>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="card shadow-sm p-4" novalidate>
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Description" class="control-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Author" class="control-label"></label>
+            <input asp-for="Author" class="form-control" />
+            <span asp-validation-for="Author" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Location" class="control-label"></label>
+            <input asp-for="Location" class="form-control" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Date" class="control-label">Date (Optional)</label>
+            <input asp-for="Date" type="date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="FileUp" class="control-label d-block"></label>
+
+            <div class="custom-file">
+                <input asp-for="FileUp" type="file" class="custom-file-input" id="FLFrontFile">
+                <label class="custom-file-label" for="FLFrontFile">Choose file...</label>
+            </div>
+
+            <span asp-validation-for="FileUp" class="text-danger"></span>
+        </div>
+
+        <div id="FilePreviewContainer" class="mb-3 border rounded p-3 bg-light">
+            <label class="control-label font-weight-bold">File Preview:</label>
+            <p class="text-muted"><em>No file selected.</em></p>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="DetectedType" class="control-label">Detected File Type</label>
+            <input id="DetectedType" class="form-control" disabled />
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="Categories" class="control-label">Categories</label>
+            <select asp-for="Categories" asp-items="ViewBag.CategoryList" multiple class="form-control"></select>
+            <span asp-validation-for="Categories" class="text-danger"></span>
+        </div>
+
+        <input type="hidden" name="DetectedFileType" id="DetectedFileType" />
+
+        <!-- Submit -->
+        <div class="d-flex justify-content-between align-items-center">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-plus-circle mr-1"></i>Create
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left mr-1"></i>Back to Assets
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        // Update filename in label
+        $('#FLFrontFile').on('change', function () {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').html(fileName);
+        });
+
+        const input = document.getElementById('FLFrontFile');
+        const previewContainer = document.getElementById('FilePreviewContainer');
+        const detectedTypeInput = document.getElementById('DetectedType');
+
+        input.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) {
+                previewContainer.innerHTML = `<label class="control-label font-weight-bold">File Preview:</label><p class="text-muted"><em>No file selected.</em></p>`;
+                detectedTypeInput.value = "";
+                document.getElementById('DetectedFileType').value = "";
+                return;
+            }
+
+            const objectURL = URL.createObjectURL(file);
+            const type = file.type;
+            let previewHTML = "";
+
+            if (type.startsWith("image/")) {
+                previewHTML = `<img src="${objectURL}" class="img-fluid rounded" style="max-height: 200px;" alt="Image preview" loading="lazy" />`;
+                detectedTypeInput.value = "Image";
+            } else if (type.startsWith("video/")) {
+                previewHTML = `
+                    <video controls class="w-100 rounded" style="max-height: 300px;">
+                        <source src="${objectURL}" type="${type}" />
+                        Your browser does not support the video tag.
+                    </video>`;
+                detectedTypeInput.value = "Video";
+            } else if (type.startsWith("audio/")) {
+                previewHTML = `
+                    <audio controls class="w-100">
+                        <source src="${objectURL}" type="${type}" />
+                        Your browser does not support the audio element.
+                    </audio>`;
+                detectedTypeInput.value = "Audio";
+            } else {
+                previewHTML = `<p class="text-muted"><em>No preview available for this file type.</em></p>`;
+                detectedTypeInput.value = "Other";
+            }
+
+            previewContainer.innerHTML = `<label class="control-label font-weight-bold mr-1">File Preview:</label>${previewHTML}`;
+            document.getElementById('DetectedFileType').value = detectedTypeInput.value;
+        });
+    </script>
+}

@@ -1,0 +1,91 @@
+﻿@model Asset
+
+@{
+    ViewData["Title"] = "Delete Asset";
+}
+
+<section class="container my-4">
+    <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0">Delete Confirmation</h2>
+        </div>
+        <div class="p-4">
+            <h3 class="mb-4 card-header-pills border-danger border-bottom border-1">
+                Are you sure you want to delete <strong>@Model.Name</strong>?
+            </h3>
+
+            <div class="mb-4 text-center">
+                @switch (Model.Type)
+                {
+                    case AssetType.Image:
+                        <img src="@Url.Content(Model.FileUrl)" class="img-fluid rounded border" style="max-height: 400px;" alt="Preview of @Model.Name" loading="lazy" />
+                        break;
+
+                    case AssetType.Video:
+                        <video controls class="w-100 rounded border" style="max-height: 400px;" aria-label="Video preview of @Model.Name">
+                            <source src="@Url.Content(Model.FileUrl)" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                        break;
+
+                    case AssetType.Audio:
+                        <audio controls class="w-100 mt-3" aria-label="Audio preview of @Model.Name">
+                            <source src="@Url.Content(Model.FileUrl)" type="audio/mpeg" />
+                            Your browser does not support the audio element.
+                        </audio>
+                        break;
+
+                    default:
+                        <p class="text-muted"><em>No preview available for this file type.</em></p>
+                        break;
+                }
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Name)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Description)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Description)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Author)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Author)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Location)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Location)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Date)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Date)</dd>
+
+                <dt class="col-sm-3">Categories</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Categories != null && Model.Categories.Any())
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <li class="list-inline-item">
+                                    <span class="badge badge-secondary">@cat.Name</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No categories assigned.</p>
+                    }
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <form asp-controller="Asset" asp-action="Delete" method="post" class="mb-0">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash mr-1"></i>Delete
+                </button>
+            </form>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </div>
+</section>

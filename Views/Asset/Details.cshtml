@@ -1,0 +1,85 @@
+﻿@model Asset
+
+@{
+    ViewData["Title"] = "Asset Details";
+}
+
+<section class="container my-4">
+    <h1 class="mb-3">@ViewData["Title"]</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="mb-4 text-center">
+                @switch (Model.Type)
+                {
+                    case AssetType.Image:
+                        <img src="@Url.Content(Model.FileUrl)" class="img-fluid rounded border" style="max-height: 400px;" alt="Image Preview" loading="lazy" />
+                        break;
+
+                    case AssetType.Video:
+                        <video controls class="w-100 rounded border" style="max-height: 400px;">
+                            <source src="@Url.Content(Model.FileUrl)" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                        break;
+
+                    case AssetType.Audio:
+                        <audio controls class="w-100 mt-3">
+                            <source src="@Url.Content(Model.FileUrl)" type="audio/mpeg" />
+                            Your browser does not support the audio element.
+                        </audio>
+                        break;
+
+                    default:
+                        <p class="text-muted"><em>No preview available for this file type.</em></p>
+                        break;
+                }
+            </div>
+
+            <!-- Asset Details -->
+            <dl class="row">
+                <dt class="col-sm-3">Type</dt>
+                <dd class="col-sm-9">@Model.Type</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Name)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Description)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Description)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Author)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Author)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Location)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Location)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Date)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Date)</dd>
+
+                <dt class="col-sm-3">Categories</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Categories != null && Model.Categories.Any())
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <li class="list-inline-item"><span class="badge badge-secondary">@cat.Name</span></li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No categories assigned.</p>
+                    }
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi-arrow-clockwise mr-1"></i>Edit Asset</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left mr-1"></i>Back to Assets
+            </a>
+        </div>
+    </div>
+</section>

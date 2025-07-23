@@ -1,0 +1,200 @@
+﻿@model EditAssetViewModel
+
+@{
+    ViewData["Title"] = "Edit Asset";
+}
+
+<section class="container my-4">
+    <h1 class="mb-3">@ViewData["Title"]</h1>
+    <h4 class="mb-4">@Model.Name</h4>
+
+    <form asp-controller="Asset" asp-action="Edit" method="post" enctype="multipart/form-data" class="card shadow-sm p-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" name="ExistingFileUrl" value="@Model.FileUrl" />
+
+        <!-- Asset Type -->
+        <div class="form-group mb-3">
+            <label>Asset Type</label>
+            <input type="text" class="form-control" value="@Model.Type.ToString()" disabled />
+        </div>
+
+        <!-- File Preview -->
+        <div class="mb-4 text-center" id="FilePreviewContainer">
+            <label>Current File:</label><br />
+
+            @switch (Model.Type)
+            {
+                case AssetType.Image:
+                    <img id="PreviewFile" src="@Url.Content(Model.FileUrl)" class="img-fluid rounded border" style="max-height: 200px;" loading="lazy" />
+                    break;
+                case AssetType.Video:
+                    <video id="PreviewFile" controls class="w-100 rounded border" style="max-height: 300px;">
+                        <source src="@Url.Content(Model.FileUrl)" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    break;
+                case AssetType.Audio:
+                    <audio id="PreviewFile" controls class="w-100">
+                        <source src="@Url.Content(Model.FileUrl)" type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                    </audio>
+                    break;
+                default:
+                    <p class="text-muted"><em>No preview available for this file type.</em></p>
+                    break;
+            }
+        </div>
+
+        <!-- Detected File Type -->
+        <div class="form-group mb-3">
+            <label>Detected File Type</label>
+            <input id="DetectedType" type="text" class="form-control" disabled />
+            <input type="hidden" name="DetectedFileType" id="DetectedFileType" />
+        </div>
+
+        <!-- Name -->
+        <div class="form-group mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group mb-3">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <!-- Author -->
+        <div class="form-group mb-3">
+            <label asp-for="Author"></label>
+            <input asp-for="Author" class="form-control" />
+            <span asp-validation-for="Author" class="text-danger"></span>
+        </div>
+
+        <!-- Location -->
+        <div class="form-group mb-3">
+            <label asp-for="Location"></label>
+            <input asp-for="Location" class="form-control" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+
+        <!-- Date -->
+        <div class="form-group mb-3">
+            <label asp-for="Date">Date (Optional)</label>
+            <input asp-for="Date" type="date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <!-- File Upload -->
+        <div class="form-group mb-4">
+                <label asp-for="FileUp" class="custom-label d-block"></label>
+            <div class="custom-file">
+            <input asp-for="FileUp" type="file" class="custom-file-input" id="FLFrontFile" onchange="handleFilePreview(this)" />
+                <label class="custom-file-label" for="FLFrontFile">Change Asset File:</label>
+            </div>
+            <span asp-validation-for="FileUp" class="text-danger"></span>
+        </div>
+
+        <!-- Categories -->
+        <div class="form-group mb-3">
+            <label asp-for="CategoryIds">Categories:</label>
+            <select asp-for="CategoryIds"
+                    asp-items="ViewBag.CategoryList"
+                    class="form-control"
+                    multiple>
+            </select>
+            <span asp-validation-for="CategoryIds" class="text-danger"></span>
+            @if (ViewBag.CategoryError != null)
+            {
+                <span class="text-danger">@ViewBag.CategoryError</span>
+            }
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save mr-1"></i>Save Changes
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function handleFilePreview(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const container = document.getElementById("FilePreviewContainer");
+            const detectedTypeInput = document.getElementById("DetectedType");
+            const hiddenDetectedInput = document.getElementById("DetectedFileType");
+
+            const fileType = file.type;
+            const objectUrl = URL.createObjectURL(file);
+            let previewHtml = "";
+
+            if (fileType.startsWith("image/")) {
+                previewHtml = `<img src="${objectUrl}" class="img-fluid rounded border" style="max-height: 200px;" loading="lazy"/>`;
+                detectedTypeInput.value = "Image";
+                hiddenDetectedInput.value = "Image";
+            } else if (fileType.startsWith("video/")) {
+                previewHtml = `
+                    <video controls class="w-100 rounded border" style="max-height: 300px;">
+                        <source src="${objectUrl}" type="${fileType}" />
+                        Your browser does not support the video tag.
+                    </video>`;
+                detectedTypeInput.value = "Video";
+                hiddenDetectedInput.value = "Video";
+            } else if (fileType.startsWith("audio/")) {
+                previewHtml = `
+                    <audio controls class="w-100">
+                        <source src="${objectUrl}" type="${fileType}" />
+                        Your browser does not support the audio element.
+                    </audio>`;
+                detectedTypeInput.value = "Audio";
+                hiddenDetectedInput.value = "Audio";
+            } else {
+                previewHtml = `<p class="text-muted"><em>No preview available for this file type.</em></p>`;
+                detectedTypeInput.value = "Other";
+                hiddenDetectedInput.value = "Other";
+            }
+
+            container.innerHTML = `<label>Preview:</label><br/>` + previewHtml;
+        }
+
+        window.onload = function () {
+            const detectedTypeInput = document.getElementById("DetectedType");
+            const hiddenDetectedInput = document.getElementById("DetectedFileType");
+
+            const typeString = "@Model.Type.ToString().ToLower()";
+
+            switch (typeString) {
+                case "image":
+                    detectedTypeInput.value = "Image";
+                    hiddenDetectedInput.value = "Image";
+                    break;
+                case "video":
+                    detectedTypeInput.value = "Video";
+                    hiddenDetectedInput.value = "Video";
+                    break;
+                case "audio":
+                    detectedTypeInput.value = "Audio";
+                    hiddenDetectedInput.value = "Audio";
+                    break;
+                default:
+                    detectedTypeInput.value = "Other";
+                    hiddenDetectedInput.value = "Other";
+                    break;
+            }
+        };
+    </script>
+}

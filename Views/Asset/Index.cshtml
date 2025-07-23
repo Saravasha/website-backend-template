@@ -1,0 +1,198 @@
+﻿@model AssetViewModel
+
+@{
+    ViewData["Title"] = "Asset Index";
+}
+
+<section class="container-fluid my-4">
+    <h1 class="mb-0">@ViewData["Title"]</h1>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-3">
+        <!-- Action Buttons -->
+        <div class="btn-group mb-2">
+            <a asp-action="Create" class="btn btn-outline-success"><i class="bi bi-plus-circle mr-1"></i>Add New Asset</a>
+            <a asp-action="CreateMultipleAssets" class="btn btn-outline-primary"><i class="bi bi-collection mr-1"></i>Add Multiple Assets</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Catalog" asp-action="Seed" class="btn btn-outline-danger"><i class="bi bi-bootstrap-reboot mr-1"></i>Seed Assets & Categories</a>
+            }
+        </div>
+
+        <!-- Search & Filters -->
+        <form asp-action="Index" method="get" class="card p-3 shadow-sm">
+            <div class="form-row align-items-end">
+                <div class="form-group mr-2">
+                    <label for="searchString">Search</label>
+                    <input type="text" id="searchString" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Name, location..." />
+                </div>
+                <div class="form-group mr-2">
+                    <label for="fromDate">From</label>
+                    <input type="date" id="fromDate" name="fromDate" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+                </div>
+                <div class="form-group mr-2">
+                    <label for="toDate">To</label>
+                    <input type="date" id="toDate" name="toDate" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+                </div>
+                <div class="form-group d-flex align-items-end">
+                    <button type="submit" class="btn btn-outline-primary mr-2">Search</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Assets Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle text-center">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Preview</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Author</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Categories</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var asset in Model.Assets)
+                {
+                    <tr>
+                        <td style="max-width: 160px; max-height: 100px;" class="text-center;">
+                            @switch (asset.Type)
+                            {
+                                case AssetType.Image:
+                                    <img src="@Url.Content(asset.FileUrl)" alt="@asset.Name" class="img-fluid rounded border" style="max-height: 100px; object-fit: cover;" loading="lazy" />
+                                    break;
+                                case AssetType.Video:
+                                    if (!string.IsNullOrEmpty(asset.ThumbnailUrl))
+                                    {
+                                    <div class="position-relative video-thumb" style="cursor: pointer;" data-toggle="modal" data-target="#videoModal-@asset.Id">
+                                        <img src="@Url.Content(asset.ThumbnailUrl)" alt="Video Thumbnail" class="img-fluid rounded" loading="lazy" />
+                                        <i class="bi bi-play-circle-fill position-absolute" style="top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; color: white;"></i>
+                                    </div>
+                                    }
+                                    else
+                                    {
+                                        <video controls preload="none" class="w-100" style="max-height: 100px;">
+                                            <source src="@Url.Content(asset.FileUrl)" type="video/mp4" />
+                                        </video>
+                                    }
+                                    break;
+                                case AssetType.Audio:
+                                    <div class="position-relative audio-thumb border border-dotted p-1" style="cursor: pointer;" data-toggle="modal" data-target="#audioModal-@asset.Id">
+                                        <i class="bi bi-play-circle-fill play-icon"></i>
+                                    </div>
+                                    break;
+                                default:
+                                    <em>No preview</em>
+                                    break;
+                            }
+                        </td>
+                        <td class="text-center align-middle">@asset.Name</td>
+                        <td class="text-center align-middle">@asset.Description</td>
+                        <td class="text-center align-middle">@asset.Author</td>
+                        <td class="text-center align-middle">@asset.Location</td>
+                        <td class="text-center align-middle">@asset.DateString</td>
+                        <td class="text-center align-middle">@asset.Type</td>
+                        <td class="text-center align-middle">
+                            @foreach (var cat in asset.Categories)
+                            {
+                                <span class="badge badge-secondary">@cat.Name</span>
+                        
+                                <br />
+                            }
+                        </td>
+                     <td class="text-center align-middle">
+                            <div class="btn-group btn-group-sm d-flex justify-content-center">
+                                <a asp-action="Edit" asp-route-id="@asset.Id" class="btn btn-outline-primary"><i class="bi bi-pencil-square mr-1"></i>Edit</a>
+                                <a asp-action="Details" asp-route-id="@asset.Id" class="btn btn-outline-info"><i class="bi bi-info-circle mr-1"></i>Details</a>
+                                <a asp-action="Delete" asp-route-id="@asset.Id" class="btn btn-outline-danger"><i class="bi bi-trash mr-1"></i>Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Video Modals -->
+    @foreach (var videoAsset in Model.Assets.Where(a => a.Type == AssetType.Video))
+    {
+    <div class="modal fade" id="videoModal-@videoAsset.Id" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                        <video controls class="w-100" id="video-player-@videoAsset.Id" data-src="@Url.Action("Stream", "Asset", new { id = videoAsset.Id })">
+                        <!-- Source will be added dynamically -->
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+    @foreach (var audioAsset in Model.Assets.Where(a => a.Type == AssetType.Audio))
+    {
+        <div class="modal fade" id="audioModal-@audioAsset.Id" tabindex="-1" role="dialog" aria-labelledby="audioModalLabel-@audioAsset.Id" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">@audioAsset.Name</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <audio controls id="audio-player-@audioAsset.Id" data-src="@Url.Action("Stream", "Asset", new { id = audioAsset.Id})">
+                            <!-- Source added via JS -->
+                        </audio>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+    $('.modal').on('shown.bs.modal', function () {
+        const video = $(this).find('video')[0];
+        if (video && video.children.length === 0) {
+            const sourceUrl = $(video).data('src');
+            const source = document.createElement('source');
+            source.src = sourceUrl;
+            source.type = 'video/mp4';
+            video.appendChild(source);
+            video.load();
+            video.play().catch(err => console.warn('Autoplay blocked', err));
+        }
+
+        const audio = $(this).find('audio')[0];
+        if (audio && audio.children.length === 0) {
+            const sourceUrl = $(audio).data('src');
+            const source = document.createElement('source');
+            source.src = sourceUrl;
+            source.type = 'audio/mpeg';
+            audio.appendChild(source);
+            audio.load();
+            audio.play().catch(err => console.warn('Autoplay blocked', err));
+        }
+    });
+
+    $('.modal').on('hidden.bs.modal', function () {
+        const media = $(this).find('video, audio')[0];
+        if (media) {
+            media.pause();
+            media.currentTime = 0;
+            media.innerHTML = '';
+        }
+    });
+});
+</script>
+}

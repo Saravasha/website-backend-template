@@ -1,0 +1,51 @@
+﻿@model Page
+
+@{
+    ViewData["Title"] = "Page Details";
+}
+
+<section class="container my-4">
+    <h1 class="mb-3">@ViewData["Title"]</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <dl class="row">
+                <dt class="col-sm-2 font-weight-semibold">@Html.DisplayNameFor(m => m.Title)</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(m => m.Title)</dd>
+
+                <dt class="col-sm-2 font-weight-semibold">@Html.DisplayNameFor(m => m.Container)</dt>
+                <dd class="col-sm-10 PageContainer">
+                        @Html.Raw(Model.Container)
+                </dd>
+
+                <dt class="col-sm-2 font-weight-semibold">@Html.DisplayNameFor(m => m.Contents)</dt>
+                <dd class="col-sm-10">
+                    @if (Model.Contents?.Any() == true)
+                    {
+                        <ul class="list-inline" role="list">
+                            @foreach (var content in Model.Contents)
+                            {
+                                <li class="list-unstyled mb-0" role="listitem">
+                                    <span class="badge badge-secondary">@content.Title</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted font-italic">No contents available.</p>
+                    }
+                </dd>
+            </dl>
+
+        </div>
+        <!-- Submit -->
+        <div class="card-footer d-flex justify-content-between">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary"><i class="bi-arrow-clockwise mr-1"></i>Update</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left mr-1"></i>Back to Pages
+            </a>
+        </div>
+    </div>
+</section>

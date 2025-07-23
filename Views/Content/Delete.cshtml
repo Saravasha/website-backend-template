@@ -1,0 +1,51 @@
+﻿@model Content
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+
+<section class="container my-4">
+    <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0">Delete Confirmation</h2>
+        </div>
+
+        <div class="p-4">
+            <h3 class="mb-4 border-danger border-bottom pb-2">Are you sure you want to delete <strong>@Model.Title</strong>?</h3>
+
+            <dl class="row">
+                <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Title)</dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+                <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Container)</dt>
+                <dd class="col-sm-10 ContentContainer">
+                    @Html.Raw(Model.Container)
+                </dd>
+                <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Page)</dt>
+                <dd class="col-sm-10"> 
+                    @if (Model.Page != null && !string.IsNullOrEmpty(Model.Page.Title))
+                    {
+                        <span class="badge badge-primary">@Model.Page.Title</span>
+                    }
+                    else
+                    {
+                        <p class="text-muted font-italic">No Page available.</p>
+                    }
+                </dd>
+            </dl>
+        </div>
+
+        <!-- Submit -->
+        <div class="card-footer d-flex justify-content-between">
+            <form asp-controller="Content" asp-action="Delete" method="post" class="mb-0">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash mr-1"></i>Delete
+                </button>
+            </form>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </div>
+</section>

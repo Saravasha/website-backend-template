@@ -1,0 +1,41 @@
+﻿@page
+@model GoshehArtWebApp.Areas.Identity.Pages.Account.Manage.EmailModel
+@{
+    ViewData["Title"] = "Manage email";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<section class="container my-4">
+    <h3 class="mb-4">@ViewData["Title"]</h3>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form id="email-form" method="post" asp-page-handler="ChangeEmail">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-floating mb-3">
+                    <label asp-for="Input.NewEmail"></label>
+                    <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
+                    <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+                </div>
+
+                <button id="change-email-button" type="submit" class="btn btn-primary btn-lg w-100">Change email</button>
+            </form>
+
+            <form method="post" asp-page-handler="SendVerificationEmail" class="mt-3">
+                <button type="submit" class="btn btn-link p-0">Resend verification email</button>
+            </form>
+
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="alert alert-info mt-3" role="alert">
+                    @Model.StatusMessage
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

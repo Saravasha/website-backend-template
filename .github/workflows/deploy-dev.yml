@@ -1,0 +1,69 @@
+name: Deploy GoshehArtWebApp to Staging
+
+on:
+  push:
+    branches:
+      - stage
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, Staging]
+
+    strategy:
+      matrix:
+        dotnet: ["8.0.x"]
+
+    env:
+      PM2_HOME: /root/.pm2
+      DOTNET_ENVIRONMENT: Staging
+      ASPNETCORE_ENVIRONMENT: Staging
+      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_STAGING }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD_STAGING }}
+      Smtp__Host: ${{ secrets.SMTP_HOST }}
+      Smtp__Username: ${{ secrets.SMTP_USERNAME }}
+      Smtp__Password: ${{ secrets.SMTP_PASSWORD }}
+      Smtp__From: ${{ secrets.SMTP_FROM }}
+      Smtp__Port: ${{ secrets.SMTP_PORT }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set HOME environment variable
+        run: echo "HOME=/home/runner" >> $GITHUB_ENV
+
+      - name: Setup .NET SDK ${{ matrix.dotnet }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish app
+        run: dotnet publish -c Release -o /var/www/goshehartwebapp-staging/actions-runner-staging/_work/GoshehArtWebApp/GoshehArtWebApp
+
+      - name: Apply EF Core Migrations
+        working-directory: /var/www/goshehartwebapp-staging/actions-runner-staging/_work/GoshehArtWebApp/GoshehArtWebApp
+        env:
+            DOTNET_ENVIRONMENT: Staging
+            CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_STAGING }}
+        run: |
+          dotnet tool update --global dotnet-ef || true
+          export PATH="$PATH:$HOME/.dotnet/tools"
+          dotnet ef database update --no-build --verbose
+
+      - name: Deploy with PM2
+        run: |
+          pm2 resurrect
+          pm2 ls
+          pm2 stop goshehartwebapp-staging || true
+
+          pm2 start /var/www/goshehartwebapp-staging/actions-runner-staging/_work/GoshehArtWebApp/GoshehArtWebApp/GoshehArtWebApp.dll --name goshehartwebapp-staging --interpreter dotnet --env DOTNET_ENVIRONMENT="Staging" --env ASPNETCORE_ENVIRONMENT="Staging" --env CONNECTION_STRING="${{ secrets.CONNECTION_STRING_STAGING }}" --env ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD_STAGING }}" --env Smtp__Host="${{ secrets.SMTP_HOST }}" --env Smtp__Username="${{ secrets.SMTP_USERNAME }}" --env Smtp__Password="${{ secrets.SMTP_PASSWORD }}" --env Smtp__From="${{ secrets.SMTP_FROM }}" --env Smtp__Port="${{ secrets.SMTP_PORT }}"
+
+          pm2 save
+
+      - name: Reload Nginx
+        run: sudo service nginx reload

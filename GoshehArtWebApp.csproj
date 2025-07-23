@@ -1,0 +1,429 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-GoshehArtWebApp-fe23a86e-9f96-4504-be42-a116fa78a78b</UserSecretsId>
+    <StartupObject></StartupObject>
+	<RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <RazorCompileOnPublish>true</RazorCompileOnPublish>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-grid.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-grid.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-grid.min.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-grid.min.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-grid.rtl.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-grid.rtl.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-grid.rtl.min.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-grid.rtl.min.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-reboot.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-reboot.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-reboot.min.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-reboot.min.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-reboot.rtl.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-reboot.rtl.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-reboot.rtl.min.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-reboot.rtl.min.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-utilities.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-utilities.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-utilities.min.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-utilities.min.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-utilities.rtl.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-utilities.rtl.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-utilities.rtl.min.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap-utilities.rtl.min.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap.min.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap.min.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap.rtl.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap.rtl.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap.rtl.min.css" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\css\bootstrap.rtl.min.css.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.bundle.js" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.bundle.js.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.bundle.min.js" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.bundle.min.js.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.esm.js" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.esm.js.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.esm.min.js" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.esm.min.js.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.js" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.js.map" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.min.js" />
+    <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.min.js.map" />
+    <Content Remove="wwwroot\Assets\Akvarell Konst\image(17) .jpg" />
+    <Content Remove="wwwroot\favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
+    <PackageReference Include="HtmlSanitizer" Version="9.0.876" />
+    <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SendGrid" Version="9.29.3" />
+    <PackageReference Include="summernote" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Page Include="wwwroot\Assets\Akvarell Konst\image %2811%29.jpg" />
+    <Page Include="wwwroot\Assets\Akvarell Konst\image %2813%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %2816%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %2817%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %2818%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %2819%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %282%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %2820%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %285%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %286%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %2864%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %287%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %288%29.jpg" />
+    <None Include="wwwroot\Assets\Akvarell Konst\image %289%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28287%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28292%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28293%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28294%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28295%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28296%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28300%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28301%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28302%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28303%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28304%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28305%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28306%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28307%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28308%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28309%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28310%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28311%29.jpg" />
+    <None Include="wwwroot\Assets\Filmproduktion\image %28312%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2815%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2821%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2822%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2823%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2824%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2825%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2826%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2827%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2828%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2829%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %283%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2830%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2831%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2832%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2833%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2834%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2835%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2836%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2837%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2838%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2839%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %284%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2840%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2841%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2842%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2843%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2844%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2845%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2846%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2847%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2848%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2849%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2850%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2851%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2852%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2853%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2854%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2855%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2856%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2857%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2858%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2859%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2860%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2861%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2862%29.jpg" />
+    <None Include="wwwroot\Assets\Kontroversiell Konst\image %2863%29.jpg" />
+    <None Include="wwwroot\Assets\Presentation\image %28297%29.jpg" />
+    <None Include="wwwroot\Assets\Presentation\image %28298%29.jpg" />
+    <None Include="wwwroot\Assets\Presentation\image %28299%29.jpg" />
+    <None Include="wwwroot\Assets\Presentation\image %28313%29.jpg" />
+    <None Include="wwwroot\Assets\Presentation\image %2865%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28243%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28244%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28245%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28246%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28247%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28248%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28249%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28250%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28251%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28252%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28253%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28254%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28255%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28256%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28257%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28258%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28259%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28260%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28261%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28262%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28263%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28264%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28265%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28266%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28267%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28268%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28269%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28270%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28271%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28272%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28273%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28274%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28275%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28276%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28277%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28278%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28279%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28280%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28281%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28282%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28283%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28284%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28285%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28286%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28288%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28289%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28290%29.jpg" />
+    <None Include="wwwroot\Assets\Press\image %28291%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28100%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28101%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28102%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28103%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28104%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28105%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28106%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28107%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28108%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28109%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28110%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28111%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28112%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28113%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28114%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28115%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28116%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28117%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28118%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28119%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28120%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28121%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28122%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28123%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28124%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28125%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28126%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28127%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28128%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28129%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28130%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28131%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28132%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28133%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28134%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28135%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28136%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28137%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28138%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28139%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28140%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28141%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28142%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28143%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28144%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28145%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28146%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28147%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28148%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28149%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28150%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28151%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28152%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28153%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28154%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28155%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28156%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28157%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28158%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28159%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28160%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28161%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28162%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28163%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28164%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28165%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28166%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28167%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28168%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28169%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28170%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28171%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28172%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28173%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28174%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28175%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28176%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28177%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28178%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28179%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28180%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28181%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28182%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28183%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28184%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28185%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28186%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28187%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28188%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28189%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28190%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28191%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28192%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28193%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28195%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28196%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28197%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28198%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28199%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28200%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28201%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28202%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28203%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28204%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28205%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28206%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28207%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28208%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28209%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28210%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28211%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28212%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28213%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28214%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28215%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28216%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28217%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28218%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28219%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28220%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28221%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28222%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28223%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28224%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28225%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28226%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28227%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28228%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28229%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28230%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28231%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28232%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28233%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28234%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28235%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28236%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28237%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28238%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28239%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28240%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28241%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %28242%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2866%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2867%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2868%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2869%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2870%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2871%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2872%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2873%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2874%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2875%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2876%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2877%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2878%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2879%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2880%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2881%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2882%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2883%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2884%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2885%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2886%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2887%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2888%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2889%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2890%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2891%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2892%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2893%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2894%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2895%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2896%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2897%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2898%29.jpg" />
+    <None Include="wwwroot\Assets\Utställningar\image %2899%29.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Content\Create.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Content\Delete.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Content\Details.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Content\Edit.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Content\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
+</Project>

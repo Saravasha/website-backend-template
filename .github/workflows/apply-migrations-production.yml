@@ -1,0 +1,23 @@
+name: Run Production EF Migrations
+
+on:
+  workflow_dispatch: # Manual trigger only
+
+jobs:
+  migrate:
+    runs-on: [self-hosted, Production]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      - name: Run EF migrations
+        env:
+          DOTNET_ENVIRONMENT: Production
+          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+          HOME: /home/runner
+        run: |
+          dotnet tool install --global dotnet-ef || true
+          export PATH="$PATH:$HOME/.dotnet/tools"
+          dotnet ef database update --connection "$CONNECTION_STRING" --no-build

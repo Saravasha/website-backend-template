@@ -1,0 +1,32 @@
+﻿.account-container {
+    background-image: url('../images/image-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat-y;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+    .account-box {
+        background-color: white;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        max-width: 50vw;
+        width: 100%;
+        opacity: .9;
+    }
+@media (max-width: 576px) {
+    .account-container {
+        padding: 1rem;
+    }
+    
+    .account-box {
+        padding: 1rem;
+        max-width: 100%; /* allow full width on small screens */
+        width: 100%;
+    }
+}

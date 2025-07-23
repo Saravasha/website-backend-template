@@ -1,0 +1,85 @@
+name: Deploy GoshehArtWebApp to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, Production]
+
+    strategy:
+      matrix:
+        dotnet: ["8.0.x"]
+
+    env:
+      PM2_HOME: /root/.pm2
+      DOTNET_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Production
+      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      Smtp__Host: ${{ secrets.SMTP_HOST }}
+      Smtp__Username: ${{ secrets.SMTP_USERNAME }}
+      Smtp__Password: ${{ secrets.SMTP_PASSWORD }}
+      Smtp__From: ${{ secrets.SMTP_FROM }}
+      Smtp__Port: ${{ secrets.SMTP_PORT }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set HOME environment variable
+        run: echo "HOME=/home/runner" >> $GITHUB_ENV
+
+      - name: Setup .NET SDK ${{ matrix.dotnet }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish app
+        run: dotnet publish -c Release -o /var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp
+      - name: Verify publish output
+        run: |
+          echo "Checking published files..."
+          ls -l /var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/wwwroot
+          if [ ! -d "/var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/wwwroot" ]; then
+            echo "ERROR: wwwroot directory does not exist!"
+            exit 1
+          fi
+      
+          if [ -z "$(ls -A /var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/wwwroot)" ]; then
+            echo "ERROR: wwwroot directory is empty!"
+            exit 1
+          fi
+      
+          # Optional: check for your specific CSS file
+          if [ ! -f "/var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/wwwroot/GoshehArtWebApp.styles.css" ]; then
+            echo "ERROR: GoshehArtWebApp.styles.css file is missing!"
+            exit 1
+          fi
+      - name: Deploy with PM2
+        env:
+          DOTNET_ENVIRONMENT: Production
+          ASPNETCORE_ENVIRONMENT: Production
+          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          Smtp__Host: ${{ secrets.SMTP_HOST }}
+          Smtp__Username: ${{ secrets.SMTP_USERNAME }}
+          Smtp__Password: ${{ secrets.SMTP_PASSWORD }}
+          Smtp__From: ${{ secrets.SMTP_FROM }}
+          Smtp__Port: ${{ secrets.SMTP_PORT }}
+        run: |
+          pm2 resurrect
+          pm2 ls
+          pm2 stop goshehartwebapp || true
+
+          pm2 start /var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/GoshehArtWebApp.dll --name goshehartwebapp --interpreter dotnet --env DOTNET_ENVIRONMENT="$DOTNET_ENVIRONMENT" --env ASPNETCORE_ENVIRONMENT="$ASPNETCORE_ENVIRONMENT" --env CONNECTION_STRING="$CONNECTION_STRING" --env ADMIN_PASSWORD="$ADMIN_PASSWORD" --env Smtp__Host="$Smtp__Host" --env Smtp__Username="$Smtp__Username" --env Smtp__Password="$Smtp__Password" --env Smtp__From="$Smtp__From" --env Smtp__Port="$Smtp__Port"
+          pm2 save
+      - name: Reload Nginx
+        run: sudo service nginx restart

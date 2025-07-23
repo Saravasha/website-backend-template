@@ -1,0 +1,152 @@
+﻿@using Microsoft.AspNetCore.Hosting
+@inject IWebHostEnvironment env
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="GoshehArtWebApp - Art-focused web application for managing productions, assets, and content." />
+    <title>@ViewData["Title"] - GoshehArtWebApp</title>
+
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+    </environment>
+    <environment exclude="Development">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+              integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+              crossorigin="anonymous" />
+    </environment>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/GoshehArtWebApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+
+    @RenderSection("Styles", required: false)
+</head>
+<body class="d-flex flex-column">
+    <div class="wrapper">
+        <header>
+            @if (env.EnvironmentName == "Development")
+            {
+                <div style="background-color: darkred; color: white; padding: 10px; text-align: center;">
+                    <strong>DEVELOPEMENT ENVIRONMENT</strong> — Not for production use
+                </div>
+            }
+            @if (env.EnvironmentName == "Staging")
+            {
+                <div style="background-color: darkorange; color: white; padding: 10px; text-align: center;">
+                    <strong>STAGING ENVIRONMENT</strong> — Not for production use
+                </div>
+            }
+            @if (User.Identity.IsAuthenticated)
+            {
+                <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" asp-controller="Home" asp-action="Index">GoshehArtWebApp</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar"
+
+                                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="mainNavbar">
+                            <ul class="navbar-nav mr-2 mb-2 mb-lg-0">
+                                <li class="nav-item mr-2 my-1">
+                                    <a class="btn btn-outline-secondary" asp-controller="Production" asp-action="Index">Production</a>
+                                </li>
+                                <li class="nav-item mr-2 my-1">
+                                    <a class="btn btn-outline-secondary" asp-controller="About" asp-action="Index">About</a>
+                                </li>
+                                <li class="nav-item mr-2 my-1">
+                                    <a class="btn btn-outline-secondary" asp-controller="Contact" asp-action="Index">Contact</a>
+                                </li>
+                                <li class="nav-item mr-2 my-1">
+                                    <a class="btn btn-outline-secondary" asp-controller="Asset" asp-action="Index">Assets</a>
+                                </li>
+                                <li class="nav-item mr-2 my-1">
+                                    <a class="btn btn-outline-secondary" asp-controller="Category" asp-action="Index">Categories</a>
+                                </li>
+                                <li class="nav-item mr-2 my-1">
+                                    <a class="btn btn-outline-secondary" asp-controller="Page" asp-action="Index">Pages</a>
+                                </li>
+                                <li class="nav-item mr-2 my-1">
+                                    <a class="btn btn-outline-secondary" asp-controller="Content" asp-action="Index">Content</a>
+                                </li>
+                                <li class="nav-item mr-2 my-1">
+                                    <a class="btn btn-outline-secondary" asp-controller="Color" asp-action="Index">Colors</a>
+                                </li>
+                            </ul>
+                            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                                <li class="nav-item  my-1">
+                                    <partial name="_LoginPartial" />
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            }
+        </header>
+
+        <main role="main" class="container-fluid">
+            @RenderBody()
+        </main>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+      <!-- TOAST -->
+<div class="position-fixed" style="bottom: 0; right: 0; padding: 1rem; z-index: 9999;">
+    <div id="cleanupToast" class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                @TempData["CleanupSuccess"]
+            </div>
+            <button type="button" class="close text-white ml-2 mb-auto" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastEl = document.getElementById('cleanupToast');
+        if (toastEl && toastEl.querySelector('.toast-body').textContent.trim()) {
+            $(toastEl).toast('show');
+        }
+    });
+</script>
+            <footer class="container-fluid border-top footer text-muted text-center py-3 ">
+                &copy; GoshehArtWebApp - @(DateTime.Now.Year) - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </footer>
+        }
+    </div>
+    <environment include="Development">
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.bundle.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+                asp-fallback-src="~/lib/jquery/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+                asp-fallback-src="~/lib/bootstrap/js/bootstrap.bundle.min.js"
+                asp-fallback-test="typeof bootstrap !== 'undefined'"
+                integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+                crossorigin="anonymous"></script>
+    </environment>
+    
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

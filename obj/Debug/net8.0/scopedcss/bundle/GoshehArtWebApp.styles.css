@@ -1,0 +1,62 @@
+/* _content/GoshehArtWebApp/Views/Shared/_Layout.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand[b-wv4do5xpkj] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-wv4do5xpkj] {
+  color: #0077cc;
+}
+
+.btn-primary[b-wv4do5xpkj] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-wv4do5xpkj], .nav-pills .show > .nav-link[b-wv4do5xpkj] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-wv4do5xpkj] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-wv4do5xpkj] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-wv4do5xpkj] {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-wv4do5xpkj] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+html[b-wv4do5xpkj], body[b-wv4do5xpkj] {
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper[b-wv4do5xpkj] {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main[b-wv4do5xpkj] {
+    flex: 1;
+}
+
+footer[b-wv4do5xpkj] {
+    
+    padding: 2em;
+    text-align: center;
+}

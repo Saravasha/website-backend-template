@@ -1,0 +1,38 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="container my-4">
+    <h1 class="mb-3">@ViewData["Title"]</h1>
+    <h4>Create a new account.</h4>
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="card shadow-sm p-4" role="form" novalidate>
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Input.Email"></label>
+            <input asp-for="Input.Email" type="email" class="form-control" autocomplete="username" aria-required="true" aria-describedby="emailError" />
+            <span id="emailError" asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Input.Password"></label>
+            <input asp-for="Input.Password" type="password" class="form-control" autocomplete="new-password" aria-required="true" aria-describedby="passwordError" />
+            <span id="passwordError" asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Input.ConfirmPassword"></label>
+            <input asp-for="Input.ConfirmPassword" type="password" class="form-control" autocomplete="new-password" aria-required="true" aria-describedby="confirmPasswordError" />
+            <span id="confirmPasswordError" asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg btn-block">Register</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,70 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+@using Microsoft.AspNetCore.Hosting
+@inject IWebHostEnvironment env
+
+
+<div class="account-container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="account-box container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                @if (env.EnvironmentName == "Development")
+                {
+                    <div class="alert alert-danger text-center">
+                        <strong>DEVELOPMENT ENVIRONMENT</strong> — Not for production use
+                    </div>
+                }
+                @if (env.EnvironmentName == "Staging")
+                {
+                    <div class="alert alert-warning text-center">
+                        <strong>STAGING ENVIRONMENT</strong> — Not for production use
+                    </div>
+                }
+
+                <h1 class="text-center">GoshehArtWebApp</h1>
+
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+                        <form id="account" method="post" novalidate>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Input.UserNameOrEmail" class="form-label"></label>
+                                <input asp-for="Input.UserNameOrEmail" class="form-control" />
+                                <span asp-validation-for="Input.UserNameOrEmail" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Input.Password" class="form-label"></label>
+                                <input asp-for="Input.Password" class="form-control" />
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input asp-for="Input.RememberMe" class="form-check-input" />
+                                <label asp-for="Input.RememberMe" class="form-check-label"></label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Log in</button>
+                        </form>
+
+                        <hr />
+                        <p class="text-center">
+                            <a asp-page="./ForgotPassword">Forgot your password?</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,380 @@
+﻿@model CreatePageViewModel
+@{
+    ViewData["Title"] = "Create Page";
+}
+
+<section class="container my-4">
+    <h1 class="mb-3">@ViewData["Title"]</h1>
+    <h4 class="mb-4">Add a new Page</h4>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="card shadow-sm p-4">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="invalid-feedback d-block"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="Container" class="form-label"></label>
+            <textarea asp-for="Container" id="summernote" class="form-control" rows="15"></textarea>
+            <span asp-validation-for="Container" class="invalid-feedback d-block"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="ContentIds" class="control-label"></label>
+            <select asp-for="ContentIds" asp-items="ViewBag.ContentList" multiple class="form-control" aria-describedby="contentsHelp"></select>
+            @if (ViewBag.ContentError != null)
+            {
+                <div class="text-danger mt-1">@ViewBag.ContentError</div>
+            }
+            <div id="contentsHelp" class="form-text">Hold Ctrl (Cmd on Mac) to select multiple items.</div>
+        </div>
+        <!-- Submit -->
+        <div class="d-flex justify-content-between align-items-center">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-plus-circle mr-1"></i>Create
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left mr-1"></i>Back to Pages
+            </a>
+        </div>
+    </form>
+
+    <!-- Asset Selection Modal -->
+    <div class="modal fade" id="assetModal" tabindex="-1" role="dialog" aria-labelledby="assetModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assetModalLabel">Select an Asset</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="assetSearchForm" class="form-row mb-3" onsubmit="return false;">
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" name="name" placeholder="Search by name" aria-label="Search by name" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="date" class="form-control" name="date" aria-label="Search by date" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <select class="form-control" name="category" id="categorySelect" aria-label="Filter by category">
+                                <option value="">All Categories</option>
+                            </select>
+                        </div>
+                        <div class="col-12 text-right">
+                            <button type="button" id="clearFiltersBtn" class="btn btn-sm btn-outline-secondary">Reset Filters</button>
+                        </div>
+                    </form>
+
+                    <div id="assetCount" class="mb-2 text-muted small"></div>
+                    <div class="row" id="assetContainer" role="list" aria-live="polite"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.js"></script>
+
+    <script>
+        let summernoteInstance;
+        let debounceTimer;
+        let allAssets = [];
+
+        $(function () {
+            initSummernote();
+            setupAssetModal();
+            setupAssetSearch();
+            $('#clearFiltersBtn').on('click', () => {
+                $('#assetSearchForm')[0].reset();
+                loadAssets();
+            });
+        });
+
+        function getMimeType(fileUrl) {
+            const ext = fileUrl.split('.').pop().toLowerCase();
+
+            // Images
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+                return `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+            }
+
+            // Videos
+            if (['mp4', 'webm', 'ogg'].includes(ext)) {
+                if (ext === 'mp4') return 'video/mp4';
+                if (ext === 'webm') return 'video/webm';
+                if (ext === 'ogg') return 'video/ogg';
+            }
+
+            // Audio
+            if (['mp3', 'wav', 'ogg'].includes(ext)) {
+                if (ext === 'mp3') return 'audio/mpeg';
+                if (ext === 'wav') return 'audio/wav';
+                if (ext === 'ogg') return 'audio/ogg';
+            }
+
+            // Fallback
+            return 'application/octet-stream';
+        }
+
+        function initSummernote() {
+            $('#summernote').summernote({
+                height: 300,
+                callbacks: {
+                    onImageUpload(files) {
+                        if (!files.length) return;
+                        const file = files[0];
+                        if (file.type.startsWith('image/')) {
+                            uploadFile(file, 'image');
+                        } else if (file.type.startsWith('video/')) {
+                            uploadFile(file, 'video');
+                        } else if (file.type.startsWith('audio/')) {
+                            uploadFile(file, 'audio');
+                        } else {
+                            alert('Unsupported file type.');
+                        }
+                    }
+                },
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video', 'insertAsset']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                buttons: {
+                    insertAsset(context) {
+                        const ui = $.summernote.ui;
+                        summernoteInstance = context;
+                        return ui.button({
+                            contents: '<i class="note-icon-picture"></i> Insert Asset',
+                            tooltip: 'Insert Asset from Asset Library',
+                            click() {
+                                $('#assetModal').modal('show');
+                            }
+                        }).render();
+                    }
+                }
+            });
+
+            function uploadFile(file, type) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                $.ajax({
+                    url: '/PageContent/UploadFile',
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success(data) {
+                        if (data.url) {
+                            if (type === 'image') {
+                                $('#summernote').summernote('insertImage', data.url);
+                            } else if (type === 'video' || type === 'audio') {
+                                const uploadMimeType = getMimeType(data.url);
+                                let mediaHtml = '';
+
+                                if (type === 'video') {
+                                    mediaHtml = `
+                                        <video controls preload="none" style="width: 50%;">
+                                            <source src="${data.url}" type="${uploadMimeType}">
+                                            Your browser does not support the video tag.
+                                        </video>`;
+                                } else if (type === 'audio') {
+                                    mediaHtml = `
+                                        <audio controls preload="none" style="width: 50%;">
+                                            <source src="${data.url}" type="${uploadMimeType}">
+                                            Your browser does not support the audio element.
+                                        </audio>`;
+                                }
+                                $('#summernote').summernote('pasteHTML', mediaHtml);
+                            }
+                        } else {
+                            alert('File upload failed.');
+                        }
+                    },
+                    error() {
+                        alert('Error uploading file.');
+                    }
+                });
+            }
+        }
+
+        function setupAssetModal() {
+            $('#assetModal').on('shown.bs.modal', async () => {
+                await loadCategories();
+                loadAssets();
+            });
+        }
+
+        function setupAssetSearch() {
+            $('#assetSearchForm input, #assetSearchForm select').off('input change').on('input change', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    const params = {};
+                    $('#assetSearchForm').serializeArray().forEach(({ name, value }) => {
+                        if (value?.trim()) params[name] = value.trim();
+                    });
+                    loadAssets(params);
+                }, 300);
+            });
+        }
+
+        async function loadCategories() {
+            try {
+                const res = await fetch('/api/react/category');
+                const categories = await res.json();
+                const select = $('#categorySelect');
+                select.empty().append('<option value="">All Categories</option>');
+                categories.forEach(cat => {
+                    select.append(`<option value="${(cat.name || '').toLowerCase()}">${cat.name}</option>`);
+                });
+            } catch (err) {
+                console.error('Failed to load categories:', err);
+            }
+        }
+
+        function loadAssets(params = {}) {
+            if (!allAssets.length) {
+                fetch('/api/react/asset')
+                    .then(res => res.json())
+                    .then(data => {
+                        allAssets = data;
+                        renderAssets(filterAssets(allAssets, params));
+                    })
+                    .catch(err => console.error('Failed to load assets:', err));
+            } else {
+                renderAssets(filterAssets(allAssets, params));
+            }
+        }
+
+        function filterAssets(assets, params) {
+            return assets.filter(asset => {
+                if (params.name && !asset.name?.toLowerCase().includes(params.name.toLowerCase())) return false;
+
+                if (params.date) {
+                    const assetDate = new Date(asset.dateString).toISOString().slice(0, 10);
+                    const filterDate = new Date(params.date).toISOString().slice(0, 10);
+                    if (assetDate !== filterDate) return false;
+                }
+
+                if (params.category) {
+                    const catFilter = params.category.toLowerCase();
+                    if (!asset.categories?.some(c => (c.name || '').toLowerCase() === catFilter)) return false;
+                }
+
+                return true;
+            });
+        }
+
+        function renderAssets(assets) {
+            const container = $('#assetContainer');
+            $('#assetCount').text(`${assets.length} asset${assets.length !== 1 ? 's' : ''} found`);
+            container.empty();
+
+            if (!assets.length) {
+                container.append(`
+                    <div class="col-12 text-center text-muted">
+                        <p>No assets match your current filters.</p>
+                        <button type="button" id="resetAfterEmpty" class="btn btn-sm btn-outline-secondary">Reset Filters</button>
+                    </div>
+                `);
+
+                $('#resetAfterEmpty').off('click').on('click', () => {
+                    $('#assetSearchForm')[0].reset();
+                    loadAssets();
+                });
+
+                return;
+            }
+
+            const fullBaseUrl = window.location.origin + '@Url.Content("~/")';
+
+
+            assets.forEach(asset => {
+                if (!asset.fileUrl) return;
+
+                const urlPath = asset.fileUrl.replace(/^\/+/, '');
+                const fullUrl = fullBaseUrl + urlPath;
+                const mediaUrl = `/Asset/Stream/${asset.id}`;
+                const fileUrl = asset.fileUrl;
+                const mimeType = getMimeType(fileUrl);
+
+                const isVideo = /\.(mp4|webm|ogg)$/i.test(asset.fileUrl);
+                const isAudio = /\.(mp3|wav|ogg)$/i.test(asset.fileUrl);
+                const isImage = /\.(jpe?g|png|gif|webp|svg)$/i.test(asset.fileUrl);
+
+                let mediaHtml = '';
+                if (isImage) {
+                    mediaHtml = `<img src="${fullUrl}" alt="${asset.name}" title="${asset.name}" class="img-fluid img-thumbnail asset-img" style="cursor:pointer;" tabindex="0" role="button" aria-label="Insert ${asset.name} into editor">`;
+                } else if (isVideo) {
+                    const thumbPath = asset.thumbnailUrl ? fullBaseUrl + asset.thumbnailUrl.replace(/^\/+/, '') : fullUrl;
+                    mediaHtml = `<img src="${thumbPath}" alt="${asset.name} (video thumbnail)" title="${asset.name}" class="img-fluid img-thumbnail asset-img" style="cursor:pointer;" tabindex="0" role="button" aria-label="Insert ${asset.name} into editor">`;
+                } else if (isAudio) {
+                    mediaHtml = `<audio controls preload="none" style="width: 100%;">
+                        <source src="${mediaUrl}" type="${mimeType}">
+                        Your browser does not support the audio element.
+                    </audio>`;
+                } else {
+                    return;
+                }
+
+                const type = isImage ? 'image' : isVideo ? 'video' : isAudio ? 'audio' : 'other';
+
+                const assetDiv = $(`
+                    <div class="col-md-3 mb-3 asset-item" tabindex="0" role="button" aria-label="Insert ${asset.name} into editor" data-url="${fullUrl}" data-id="${asset.id}" data-type="${type}">
+                        ${mediaHtml}
+                    </div>
+                `);
+
+                assetDiv.on('click keypress', e => {
+                    if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') {
+
+                        const assetId = assetDiv.data('id');
+                        const mediaType = assetDiv.data('type');
+                        let insertHtml = '';
+
+                        if (mediaType === 'image') {
+                            const imageUrl = assetDiv.data('url');
+                            summernoteInstance.invoke('editor.insertImage', imageUrl);
+                        } else if (mediaType === 'video') {
+                            const posterUrl = asset.thumbnailUrl ? fullBaseUrl + asset.thumbnailUrl.replace(/^\/+/, '') : '';
+                            insertHtml = `<video controls preload="none" style="width:50%;"${posterUrl ? ` poster="${posterUrl}"` : ''}>
+                                <source src="${mediaUrl}" type="${mimeType}">
+                                Your browser does not support the video tag.
+                            </video>`;
+                            summernoteInstance.invoke('editor.pasteHTML', insertHtml);
+                        } else if (mediaType === 'audio') {
+                            insertHtml = `<audio controls preload="none" style="width:50%;">
+                                <source src="${mediaUrl}" type="${mimeType}">
+                                Your browser does not support the audio element.
+                            </audio>`;
+                            summernoteInstance.invoke('editor.pasteHTML', insertHtml);
+                        }
+
+                        $('#assetModal').modal('hide');
+                    }
+                });
+
+                container.append(assetDiv);
+            });
+        }
+    </script>
+}
