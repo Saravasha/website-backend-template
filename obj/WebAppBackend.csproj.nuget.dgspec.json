@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\GoshehArtWebApp.csproj": {}
+    "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\WebAppBackend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\GoshehArtWebApp.csproj": {
+    "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\WebAppBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\GoshehArtWebApp.csproj",
-        "projectName": "GoshehArtWebApp",
-        "projectPath": "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\GoshehArtWebApp.csproj",
+        "projectUniqueName": "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\WebAppBackend.csproj",
+        "projectName": "WebAppBackend",
+        "projectPath": "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\WebAppBackend.csproj",
         "packagesPath": "C:\\Users\\Siavash Gosheh\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\obj\\",
         "projectStyle": "PackageReference",
