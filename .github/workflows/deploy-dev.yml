@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted, Staging]
+    environment: Staging
 
     strategy:
       matrix:
@@ -43,10 +44,10 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish app
-        run: dotnet publish -c Release -o /opt/actions-runners/webappbackend-staging/_work/WebAppBackend/WebAppBackend
+        run: dotnet publish -c Release -o /opt/actions-runners/backend-staging/_work/WebAppBackend/WebAppBackend
 
       - name: Apply EF Core Migrations
-        working-directory: /opt/actions-runners/webappbackend-staging/_work/WebAppBackend/WebAppBackend
+        working-directory: /opt/actions-runners/backend-staging/_work/WebAppBackend/WebAppBackend
         env:
             DOTNET_ENVIRONMENT: Staging
             CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_STAGING }}
@@ -59,9 +60,9 @@ jobs:
         run: |
           pm2 resurrect
           pm2 ls
-          pm2 stop webappbackend-staging || true
+          pm2 stop backend-staging || true
 
-          pm2 start /opt/actions-runners/webappbackend-staging/_work/WebAppBackend/WebAppBackend/WebAppBackend.dll --name webappbackend-staging --interpreter dotnet --env DOTNET_ENVIRONMENT="Staging" --env ASPNETCORE_ENVIRONMENT="Staging" --env CONNECTION_STRING="${{ secrets.CONNECTION_STRING_STAGING }}" --env ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD_STAGING }}" --env Smtp__Host="${{ secrets.SMTP_HOST }}" --env Smtp__Username="${{ secrets.SMTP_USERNAME }}" --env Smtp__Password="${{ secrets.SMTP_PASSWORD }}" --env Smtp__From="${{ secrets.SMTP_FROM }}" --env Smtp__Port="${{ secrets.SMTP_PORT }}"
+          pm2 start /opt/actions-runners/backend-staging/_work/WebAppBackend/WebAppBackend/WebAppBackend.dll --name backend-staging --interpreter dotnet --env DOTNET_ENVIRONMENT="Staging" --env ASPNETCORE_ENVIRONMENT="Staging" --env CONNECTION_STRING="${{ secrets.CONNECTION_STRING_STAGING }}" --env ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD_STAGING }}" --env Smtp__Host="${{ secrets.SMTP_HOST }}" --env Smtp__Username="${{ secrets.SMTP_USERNAME }}" --env Smtp__Password="${{ secrets.SMTP_PASSWORD }}" --env Smtp__From="${{ secrets.SMTP_FROM }}" --env Smtp__Port="${{ secrets.SMTP_PORT }}"
 
           pm2 save
 
