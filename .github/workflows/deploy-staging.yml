@@ -1,4 +1,4 @@
-name: Deploy GoshehArtWebApp to Production
+name: Deploy WebAppBackend to Production
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted, Production]
+    environment: Production
 
     strategy:
       matrix:
@@ -43,24 +44,24 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish app
-        run: dotnet publish -c Release -o /var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp
+        run: dotnet publish -c Release -o /opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend
       - name: Verify publish output
         run: |
           echo "Checking published files..."
-          ls -l /var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/wwwroot
-          if [ ! -d "/var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/wwwroot" ]; then
+          ls -l /opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend/wwwroot
+          if [ ! -d "/opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend/wwwroot" ]; then
             echo "ERROR: wwwroot directory does not exist!"
             exit 1
           fi
       
-          if [ -z "$(ls -A /var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/wwwroot)" ]; then
+          if [ -z "$(ls -A /opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend/wwwroot)" ]; then
             echo "ERROR: wwwroot directory is empty!"
             exit 1
           fi
       
           # Optional: check for your specific CSS file
-          if [ ! -f "/var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/wwwroot/GoshehArtWebApp.styles.css" ]; then
-            echo "ERROR: GoshehArtWebApp.styles.css file is missing!"
+          if [ ! -f "/opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend/wwwroot/WebAppBackend.styles.css" ]; then
+            echo "ERROR: WebAppBackend.styles.css file is missing!"
             exit 1
           fi
       - name: Deploy with PM2
@@ -77,9 +78,9 @@ jobs:
         run: |
           pm2 resurrect
           pm2 ls
-          pm2 stop goshehartwebapp || true
+          pm2 stop backend-production || true
 
-          pm2 start /var/www/goshehartwebapp/_work/GoshehArtWebApp/GoshehArtWebApp/GoshehArtWebApp.dll --name goshehartwebapp --interpreter dotnet --env DOTNET_ENVIRONMENT="$DOTNET_ENVIRONMENT" --env ASPNETCORE_ENVIRONMENT="$ASPNETCORE_ENVIRONMENT" --env CONNECTION_STRING="$CONNECTION_STRING" --env ADMIN_PASSWORD="$ADMIN_PASSWORD" --env Smtp__Host="$Smtp__Host" --env Smtp__Username="$Smtp__Username" --env Smtp__Password="$Smtp__Password" --env Smtp__From="$Smtp__From" --env Smtp__Port="$Smtp__Port"
+          pm2 start /opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend/WebAppBackend.dll --name backend-production --interpreter dotnet --env DOTNET_ENVIRONMENT="$DOTNET_ENVIRONMENT" --env ASPNETCORE_ENVIRONMENT="$ASPNETCORE_ENVIRONMENT" --env CONNECTION_STRING="$CONNECTION_STRING" --env ADMIN_PASSWORD="$ADMIN_PASSWORD" --env Smtp__Host="$Smtp__Host" --env Smtp__Username="$Smtp__Username" --env Smtp__Password="$Smtp__Password" --env Smtp__From="$Smtp__From" --env Smtp__Port="$Smtp__Port"
           pm2 save
       - name: Reload Nginx
         run: sudo service nginx restart
