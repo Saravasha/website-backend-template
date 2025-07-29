@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("aspnet-GoshehArtWebApp-fe23a86e-9f96-4504-be42-a116fa78a78b")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebAppBackend")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+86e722c7f7a0648e00782ee2a83a99315fa6fd28")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebAppBackend")]
