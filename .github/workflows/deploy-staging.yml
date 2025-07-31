@@ -1,9 +1,10 @@
-name: Deploy WebAppBackend to Production
+name: Deploy to Production
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:

@@ -1,9 +1,10 @@
-name: Deploy WebAppBackend to Staging
+name: Deploy to Staging
 
 on:
   push:
     branches:
       - stage
+  workflow_dispatch:
 
 jobs:
   deploy:
