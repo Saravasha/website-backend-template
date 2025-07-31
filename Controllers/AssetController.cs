@@ -1,16 +1,16 @@
-﻿using GoshehArtWebApp.Data;
-using GoshehArtWebApp.Models;
-using GoshehArtWebApp.Services;
-using GoshehArtWebApp.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System.Data;
+using WebAppBackend.Data;
+using WebAppBackend.Models;
+using WebAppBackend.Services;
+using WebAppBackend.ViewModels;
 
-namespace GoshehArtWebApp.Controllers
+namespace WebAppBackend.Controllers
 {
     [Authorize]
     public class AssetController : Controller
@@ -110,7 +110,7 @@ namespace GoshehArtWebApp.Controllers
                     (a.Description?.ToLower().Contains(searchString) ?? false) ||
                     (a.Location?.ToLower().Contains(searchString) ?? false) ||
                     (a.Author?.ToLower().Contains(searchString) ?? false) ||
-                    (a.Date.HasValue && a.Date.Value.ToString("yyyy-MM-dd").Contains(searchString)) ||
+                    a.Date.HasValue && a.Date.Value.ToString("yyyy-MM-dd").Contains(searchString) ||
                     a.Categories.Any(c => c.Name.ToLower().Contains(searchString))
                 ).ToList();
             }
@@ -140,7 +140,7 @@ namespace GoshehArtWebApp.Controllers
         // GET: AssetController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            Models.Asset? asset = await _context.Assets
+            Asset? asset = await _context.Assets
                 .AsNoTracking()
                 .Include(c => c.Categories)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -196,7 +196,7 @@ namespace GoshehArtWebApp.Controllers
 
                 foreach (var item in Categories)
                 {
-                    int castItem = Int32.Parse(item);
+                    int castItem = int.Parse(item);
                     var catToAdd = _context.Categories.FirstOrDefault(c => c.Id == castItem);
                     if (catToAdd != null)
                         AssetToAdd.Categories.Add(catToAdd);
@@ -222,7 +222,7 @@ namespace GoshehArtWebApp.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             EditAssetViewModel cavm = new EditAssetViewModel();
-            Models.Asset? asset = await _context.Assets
+            Asset? asset = await _context.Assets
                 .Include(c => c.Categories)
                 .FirstOrDefaultAsync(p => p.Id == id);
 

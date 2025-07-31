@@ -1,8 +1,8 @@
-﻿using GoshehArtWebApp.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using WebAppBackend.Models;
 
-namespace GoshehArtWebApp.ViewModels
+namespace WebAppBackend.ViewModels
 {
     public class CreateContentViewModel
     {

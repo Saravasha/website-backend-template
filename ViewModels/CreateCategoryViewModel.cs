@@ -1,6 +1,5 @@
-﻿using GoshehArtWebApp.Models;
-using System.ComponentModel.DataAnnotations;
-namespace GoshehArtWebApp.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+namespace WebAppBackend.ViewModels
 {
     public class CreateCategoryViewModel
     {

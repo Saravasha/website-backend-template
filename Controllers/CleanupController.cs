@@ -1,9 +1,8 @@
-﻿using GoshehArtWebApp.Data;
-using GoshehArtWebApp.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAppBackend.Data;
 
-namespace GoshehArtWebApp.Controllers
+namespace WebAppBackend.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class CleanupController : Controller

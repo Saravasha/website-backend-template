@@ -1,11 +1,11 @@
-﻿using GoshehArtWebApp.Data;
-using GoshehArtWebApp.Models;
-using GoshehArtWebApp.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebAppBackend.Data;
+using WebAppBackend.Models;
+using WebAppBackend.ViewModels;
 
-namespace GoshehArtWebApp.Controllers
+namespace WebAppBackend.Controllers
 {
     [Authorize]
     public class CategoryController : Controller

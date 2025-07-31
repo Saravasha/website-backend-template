@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace GoshehArtWebApp.Services
+namespace WebAppBackend.Services
 {
     public class VideoThumbnailProvider
     {
@@ -43,7 +43,7 @@ namespace GoshehArtWebApp.Services
                 string stderr = await process.StandardError.ReadToEndAsync();
                 await process.WaitForExitAsync();
 
-                if (process.ExitCode != 0 || !System.IO.File.Exists(thumbnailPath))
+                if (process.ExitCode != 0 || !File.Exists(thumbnailPath))
                 {
                     // Log error somewhere persistent in production
                     Console.WriteLine("FFmpeg Error:\n" + stderr);

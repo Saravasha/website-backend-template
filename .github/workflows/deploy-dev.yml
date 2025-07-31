@@ -9,7 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted, Staging]
-    environment: Staging
 
     strategy:
       matrix:

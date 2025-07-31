@@ -1,11 +1,10 @@
-using GoshehArtWebApp.Data;
-using GoshehArtWebApp.Models;
-using GoshehArtWebApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using WebAppBackend.Data;
+using WebAppBackend.Models;
 
-namespace GoshehArtWebApp.Controllers
+namespace WebAppBackend.Controllers
 {
 
     [Authorize]

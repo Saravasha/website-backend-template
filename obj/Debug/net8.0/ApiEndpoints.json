@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "GoshehArtWebApp.Controllers.ReactController",
+    "ContainingType": "WebAppBackend.Controllers.ReactController",
     "Method": "GetAssets",
     "RelativePath": "api/React/asset",
     "HttpMethod": "GET",
@@ -9,7 +9,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[GoshehArtWebApp.Models.Asset, WebAppBackend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[WebAppBackend.Models.Asset, WebAppBackend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -20,7 +20,7 @@
     ]
   },
   {
-    "ContainingType": "GoshehArtWebApp.Controllers.ReactController",
+    "ContainingType": "WebAppBackend.Controllers.ReactController",
     "Method": "GetCategories",
     "RelativePath": "api/React/category",
     "HttpMethod": "GET",
@@ -29,7 +29,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[GoshehArtWebApp.Models.Category, WebAppBackend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[WebAppBackend.Models.Category, WebAppBackend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -40,7 +40,7 @@
     ]
   },
   {
-    "ContainingType": "GoshehArtWebApp.Controllers.ReactController",
+    "ContainingType": "WebAppBackend.Controllers.ReactController",
     "Method": "GetColors",
     "RelativePath": "api/React/color",
     "HttpMethod": "GET",
@@ -49,7 +49,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[GoshehArtWebApp.Models.Color, WebAppBackend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[WebAppBackend.Models.Color, WebAppBackend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -60,7 +60,7 @@
     ]
   },
   {
-    "ContainingType": "GoshehArtWebApp.Controllers.ReactController",
+    "ContainingType": "WebAppBackend.Controllers.ReactController",
     "Method": "GetPages",
     "RelativePath": "api/React/page",
     "HttpMethod": "GET",
@@ -69,7 +69,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[GoshehArtWebApp.Models.Page, WebAppBackend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[WebAppBackend.Models.Page, WebAppBackend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

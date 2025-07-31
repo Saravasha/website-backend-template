@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace GoshehArtWebApp.Areas.Identity.Pages.Account.Manage
+namespace WebAppBackend.Areas.Identity.Pages.Account.Manage
 {
     [Authorize]
     public class IndexModel : PageModel

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 
-namespace GoshehArtWebApp.ViewModels
+namespace WebAppBackend.ViewModels
 {
     public class CreateColorViewModel
     {
