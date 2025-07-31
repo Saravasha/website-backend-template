@@ -571,4 +571,3 @@ wwwroot\lib\jquery\jquery.min.map
 wwwroot\lib\jquery\jquery.slim.js
 wwwroot\lib\jquery\jquery.slim.min.js
 wwwroot\lib\jquery\jquery.slim.min.map
-wwwroot\robots.txt

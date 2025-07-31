@@ -1,11 +1,11 @@
-﻿using GoshehArtWebApp.Data;
-using GoshehArtWebApp.Models;
-using GoshehArtWebApp.Services;
-using GoshehArtWebApp.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAppBackend.Data;
+using WebAppBackend.Models;
+using WebAppBackend.Services;
+using WebAppBackend.ViewModels;
 
-namespace GoshehArtWebApp.Controllers
+namespace WebAppBackend.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class CatalogController : Controller
@@ -64,7 +64,7 @@ namespace GoshehArtWebApp.Controllers
 
                         var assetType = _assetTypeProvider.GetType(Path.GetExtension(fileInDirectory));
 
-                        Models.Asset assetStage = new Models.Asset()
+                        Asset assetStage = new Asset()
                         {
                             Name = fileInDirectory,
                             Description = folder,

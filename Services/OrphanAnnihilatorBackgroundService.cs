@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using GoshehArtWebApp.Data;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using WebAppBackend.Data;
 
-namespace GoshehArtWebApp.Services
+namespace WebAppBackend.Services
 {
     public class OrphanAnnihilatorBackgroundService : BackgroundService
     {

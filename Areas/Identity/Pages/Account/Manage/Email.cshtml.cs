@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace GoshehArtWebApp.Areas.Identity.Pages.Account.Manage
+namespace WebAppBackend.Areas.Identity.Pages.Account.Manage
 {
     [Authorize]
     public class EmailModel : PageModel
@@ -134,7 +134,7 @@ namespace GoshehArtWebApp.Areas.Identity.Pages.Account.Manage
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmailChange",
                     pageHandler: null,
-                    values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
+                    values: new { area = "Identity", userId, email = Input.NewEmail, code },
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
@@ -171,7 +171,7 @@ namespace GoshehArtWebApp.Areas.Identity.Pages.Account.Manage
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { area = "Identity", userId = userId, code = code },
+                values: new { area = "Identity", userId, code },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 email,

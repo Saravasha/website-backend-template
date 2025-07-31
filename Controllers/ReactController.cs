@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using GoshehArtWebApp.Data;
-using GoshehArtWebApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using WebAppBackend.Models;
+using WebAppBackend.Data;
 
 
-namespace GoshehArtWebApp.Controllers
+namespace WebAppBackend.Controllers
 {
 
     [Route("api/[controller]")]

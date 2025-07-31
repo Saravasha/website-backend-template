@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace GoshehArtWebApp.Models
+namespace WebAppBackend.Models
 {
     public class Font
     {

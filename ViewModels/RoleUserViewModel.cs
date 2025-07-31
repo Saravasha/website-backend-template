@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace GoshehArtWebApp.ViewModels
+namespace WebAppBackend.ViewModels
 {
     public class RoleUserViewModel : IdentityUser
     {

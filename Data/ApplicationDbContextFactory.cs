@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Design;
 using System;
 
-namespace GoshehArtWebApp.Data
+namespace WebAppBackend.Data
 {
     public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {

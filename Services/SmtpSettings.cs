@@ -1,4 +1,4 @@
-﻿namespace GoshehArtWebApp.Services
+﻿namespace WebAppBackend.Services
 {
     public class SmtpSettings
     {

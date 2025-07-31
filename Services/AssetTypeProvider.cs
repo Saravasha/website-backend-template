@@ -1,6 +1,6 @@
-﻿using GoshehArtWebApp.Models;
+﻿using WebAppBackend.Models;
 
-namespace GoshehArtWebApp.Services
+namespace WebAppBackend.Services
 {
     public class AssetTypeProvider
     {
