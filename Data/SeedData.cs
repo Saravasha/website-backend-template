@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GoshehArtWebApp.Data
+namespace WebAppBackend.Data
 {
     public static class SeedData
     {

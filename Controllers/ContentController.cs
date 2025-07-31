@@ -1,15 +1,15 @@
-﻿using GoshehArtWebApp.Data;
-using GoshehArtWebApp.Models;
-using GoshehArtWebApp.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using NuGet.ContentModel;
+using WebAppBackend.Data;
+using WebAppBackend.Models;
+using WebAppBackend.ViewModels;
 
 
-namespace GoshehArtWebApp.Controllers
+namespace WebAppBackend.Controllers
 {
     [Authorize]
     public class ContentController : Controller

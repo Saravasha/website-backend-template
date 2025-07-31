@@ -1,9 +1,9 @@
-﻿using GoshehArtWebApp.Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Azure;
+using WebAppBackend.Models;
 
-namespace GoshehArtWebApp.ViewModels
+namespace WebAppBackend.ViewModels
 {
     public class CreateCatalogViewModel : ResponseModel
     {

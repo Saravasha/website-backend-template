@@ -1,8 +1,8 @@
-﻿using GoshehArtWebApp.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebAppBackend.Models;
 
-namespace GoshehArtWebApp.Data
+namespace WebAppBackend.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

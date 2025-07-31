@@ -1,4 +1,4 @@
-﻿namespace GoshehArtWebApp.Models
+﻿namespace WebAppBackend.Models
 {
     public class ResponseModel
     {

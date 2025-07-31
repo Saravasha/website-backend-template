@@ -1,8 +1,7 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace GoshehArtWebApp.Models
+namespace WebAppBackend.Models
 {
     public class Content
     {

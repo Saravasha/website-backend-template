@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace GoshehArtWebApp.Areas.Identity.Pages.Account
+namespace WebAppBackend.Areas.Identity.Pages.Account
 {
     [Authorize]
     public class ConfirmEmailChangeModel : PageModel

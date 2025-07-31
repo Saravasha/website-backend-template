@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 
-namespace GoshehArtWebApp.Models
+namespace WebAppBackend.Models
 {
     public class Page
     {

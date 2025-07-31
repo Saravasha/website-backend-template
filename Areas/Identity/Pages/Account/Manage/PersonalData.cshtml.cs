@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace GoshehArtWebApp.Areas.Identity.Pages.Account.Manage
+namespace WebAppBackend.Areas.Identity.Pages.Account.Manage
 {
     [Authorize(Roles = "Admin")]
     public class PersonalDataModel : PageModel

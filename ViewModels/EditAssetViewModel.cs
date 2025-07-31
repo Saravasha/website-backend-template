@@ -1,9 +1,8 @@
-﻿
-using GoshehArtWebApp.Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-namespace GoshehArtWebApp.ViewModels;
+using WebAppBackend.Models;
+namespace WebAppBackend.ViewModels;
 
 public class EditAssetViewModel
 {
