@@ -80,7 +80,20 @@ jobs:
           pm2 ls
           pm2 stop backend-production || true
 
-          pm2 start /opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend/WebAppBackend.dll --name backend-production --interpreter dotnet --env DOTNET_ENVIRONMENT="$DOTNET_ENVIRONMENT" --env ASPNETCORE_ENVIRONMENT="$ASPNETCORE_ENVIRONMENT" --env CONNECTION_STRING="$CONNECTION_STRING" --env ADMIN_PASSWORD="$ADMIN_PASSWORD" --env Smtp__Host="$Smtp__Host" --env Smtp__Username="$Smtp__Username" --env Smtp__Password="$Smtp__Password" --env Smtp__From="$Smtp__From" --env Smtp__Port="$Smtp__Port"
+          DOTNET_ENVIRONMENT=Staging \
+          ASPNETCORE_ENVIRONMENT=Staging \
+          CONNECTION_STRING="${{ secrets.CONNECTION_STRING }}" \
+          ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}" \
+          Smtp__Host="${{ secrets.SMTP_HOST }}" \
+          Smtp__Username="${{ secrets.SMTP_USERNAME }}" \
+          Smtp__Password="${{ secrets.SMTP_PASSWORD }}" \
+          Smtp__From="${{ secrets.SMTP_FROM }}" \
+          Smtp__Port="${{ secrets.SMTP_PORT }}" \
+          pm2 start /opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend/WebAppBackend.dll \
+            --name backend-staging \
+            --interpreter dotnet
+
           pm2 save
+
       - name: Reload Nginx
         run: sudo service nginx restart
