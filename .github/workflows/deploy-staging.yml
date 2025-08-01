@@ -80,8 +80,8 @@ jobs:
           pm2 ls
           pm2 stop backend-production || true
 
-          DOTNET_ENVIRONMENT=Staging \
-          ASPNETCORE_ENVIRONMENT=Staging \
+          DOTNET_ENVIRONMENT=Production \
+          ASPNETCORE_ENVIRONMENT=Production \
           CONNECTION_STRING="${{ secrets.CONNECTION_STRING }}" \
           ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}" \
           Smtp__Host="${{ secrets.SMTP_HOST }}" \
@@ -90,7 +90,7 @@ jobs:
           Smtp__From="${{ secrets.SMTP_FROM }}" \
           Smtp__Port="${{ secrets.SMTP_PORT }}" \
           pm2 start /opt/actions-runners/backend-production/_work/WebAppBackend/WebAppBackend/WebAppBackend.dll \
-            --name backend-staging \
+            --name backend-production \
             --interpreter dotnet
 
           pm2 save
