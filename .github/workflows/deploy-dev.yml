@@ -44,10 +44,10 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish app
-        run: dotnet publish -c Release -o /opt/actions-runners/backend-staging/_work/WebAppBackend/WebAppBackend
+        run: dotnet publish -c Release -o /opt/actions-runners/backend-staging/_work/__BACKEND_NAME__/__BACKEND_NAME__
 
       - name: Apply EF Core Migrations
-        working-directory: /opt/actions-runners/backend-staging/_work/WebAppBackend/WebAppBackend
+        working-directory: /opt/actions-runners/backend-staging/_work/__BACKEND_NAME__/__BACKEND_NAME__
         env:
             DOTNET_ENVIRONMENT: Staging
             CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_STAGING }}
@@ -71,7 +71,7 @@ jobs:
           Smtp__Password="${{ secrets.SMTP_PASSWORD }}" \
           Smtp__From="${{ secrets.SMTP_FROM }}" \
           Smtp__Port="${{ secrets.SMTP_PORT }}" \
-          pm2 start /opt/actions-runners/backend-staging/_work/WebAppBackend/WebAppBackend/WebAppBackend.dll \
+          pm2 start /opt/actions-runners/backend-staging/_work/__BACKEND_NAME__/__BACKEND_NAME__/WebAppBackend.dll \
             --name backend-staging \
             --interpreter dotnet
 

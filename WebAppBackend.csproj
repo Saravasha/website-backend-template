@@ -57,6 +57,7 @@
     <Content Remove="C:\Users\Siavash Gosheh\.nuget\packages\bootstrap\5.3.5\contentFiles\any\any\wwwroot\js\bootstrap.min.js.map" />
     <Content Remove="wwwroot\Assets\Akvarell Konst\image(17) .jpg" />
     <Content Remove="wwwroot\favicon.ico" />
+    <Content Remove="wwwroot\robots.txt" />
   </ItemGroup>
 
   <ItemGroup>
