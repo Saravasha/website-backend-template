@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
 using WebAppBackend.Data;
 using WebAppBackend.Services;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +13,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
 // Set connection string based on environment
-string connectionString = builder.Environment.IsDevelopment()
-    ? builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
-    : Environment.GetEnvironmentVariable("CONNECTION_STRING")
+string connectionString;
+
+if (builder.Environment.IsDevelopment())
+{
+    var baseConnStr = builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+    // Generate a dev-only DB name (e.g., from machine or folder name)
+    string devDbName = $"DevDb_{Environment.UserName}_{Path.GetFileName(Environment.CurrentDirectory)}";
+
+    // Replace catalog in connection string
+    var sqlBuilder = new SqlConnectionStringBuilder(baseConnStr)
+    {
+        InitialCatalog = devDbName
+    };
+
+    connectionString = sqlBuilder.ToString();
+
+    Console.WriteLine($"🛠️ Development DB: {sqlBuilder.InitialCatalog}");
+}
+else
+{
+    connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
         ?? throw new InvalidOperationException("Connection string 'CONNECTION_STRING' not found.");
+}
+
 
 if (builder.Environment.IsDevelopment())
 {
