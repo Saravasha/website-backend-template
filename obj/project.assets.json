@@ -8963,11 +8963,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\WebAppBackend.csproj",
+      "projectUniqueName": "C:\\Users\\Siavash Gosheh\\source\\repos\\website-templates\\website-template-backend\\WebAppBackend.csproj",
       "projectName": "WebAppBackend",
-      "projectPath": "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\WebAppBackend.csproj",
+      "projectPath": "C:\\Users\\Siavash Gosheh\\source\\repos\\website-templates\\website-template-backend\\WebAppBackend.csproj",
       "packagesPath": "C:\\Users\\Siavash Gosheh\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Siavash Gosheh\\source\\repos\\SaravashaWebsite\\WebAppBackend\\obj\\",
+      "outputPath": "C:\\Users\\Siavash Gosheh\\source\\repos\\website-templates\\website-template-backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
