@@ -38,7 +38,7 @@ namespace WebAppBackend.Data
                 new Page { Id = 1, Title = "Home", Container = @"<p>Home</p>" },
                 new Page { Id = 2, Title = "Production", Container = @"<p>Production</p>" },
                 new Page { Id = 3, Title = "About", Container = @"<p>About</p>" },
-                new Page { Id = 4, Title = "Contact", Container = @"<p>Email: <a href='mailto:info@goshehart.se'>info@goshehart.se</a></p>" },
+                new Page { Id = 4, Title = "Contact", Container = @"<p>Email: <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>" },
                 new Page
                 {
                     Id = 5,
@@ -53,21 +53,8 @@ namespace WebAppBackend.Data
                 new Content { Id = 3, Title = "Biography", Container = @"<p>Early Life</p>", PageId = 3 },
                 new Content { Id = 4, Title = "Social Media", Container = @"<p>Faceberrk</p>", PageId = 4 },
                 new Content { Id = 5, Title = "Cookie Policy", Container = @"<p>We don't use cookies</p>", PageId = 5 },
-                new Content
-                {
-                    Id = 7,
-                    Title = "Wikipedia Profil",
-                    Container = @"
-    <p><strong>Fateme Gosheh</strong> är en regissör, målare och fotograf född 1961 i Iran, numera bosatt och verksam i Sverige.</p>
-    <p>År 2002 ställde hon ut målningar under namnet <em>”En muslimsk kvinna – drömmar och mardrömmar”</em> på Liljevalchs vårsalong. Utställningen föreställde döda och nakna kvinnor tillsammans med olika muslimska symboler, något som väckte uppmärksamhet och ilska. För målningarna polisanmäldes hon för hets mot folkgrupp av Sveriges muslimska råd. Svenska Dagbladet och andra svenska tidningar som återgav hennes konst anmäldes också.</p>
-    <p>Trots hot fortsatte hon därefter med konst som utmanar islam.</p>
-    <p>År 2010 hade hennes dokumentärfilm <em>Tusen och en natt (jävla sköna män)</em> premiär.</p>
-    <p>Hennes verk har ställts ut runt om i världen, bland annat i Florens, New York och Los Angeles.</p>"
-,
-                    PageId = 3
-                },
                 new Content { Id = 6, Title = "Privacy Policy", Container = @"
-            <p>At Goshehart.se, we respect your privacy and are committed to protecting your personal data.</p>
+            <p>At __DOMAIN_NAME__, we respect your privacy and are committed to protecting your personal data.</p>
             <h3>Cookies</h3>
             <p>Our website does not use cookies to track visitors or personalize content. The only cookies used are for authentication purposes on the backend, which is accessible only to the site owner (administrator) for managing the website. These cookies are essential for secure login and session management and do not affect public visitors.</p>
             <h3>Personal Data</h3>
@@ -75,7 +62,7 @@ namespace WebAppBackend.Data
             <h3>Data Security</h3>
             <p>The backend login area is secured and accessible only by the site owner. We take reasonable measures to protect any stored data related to site administration.</p>
             <h3>Your Rights</h3>
-            <p>Since we do not collect personal data from visitors, there are no user data requests applicable. If you have questions or concerns about privacy, please contact us at <a href='mailto:info@goshehart.se'>info@goshehart.se</a></p>", PageId = 5, Date = new DateOnly(2025, 6, 3) }
+            <p>Since we do not collect personal data from visitors, there are no user data requests applicable. If you have questions or concerns about privacy, please contact us at <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>", PageId = 5, Date = new DateOnly(2025, 6, 3) }
             );
 
             modelbuilder.Entity<Category>().HasData(
