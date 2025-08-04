@@ -22,7 +22,7 @@ if (builder.Environment.IsDevelopment())
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
     // Generate a dev-only DB name (e.g., from machine or folder name)
-    string devDbName = $"DevDb_{Environment.UserName}_{Path.GetFileName(Environment.CurrentDirectory)}";
+    string devDbName = $"DevDb_{Path.GetFileName(Environment.CurrentDirectory)}";
 
     // Replace catalog in connection string
     var sqlBuilder = new SqlConnectionStringBuilder(baseConnStr)
