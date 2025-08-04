@@ -8,7 +8,7 @@ using WebAppBackend.Data;
 
 #nullable disable
 
-namespace GoshehArtWebApp.Migrations
+namespace WebAppBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace GoshehArtWebApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "8.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -51,410 +51,6 @@ namespace GoshehArtWebApp.Migrations
                         {
                             AssetsId = 3,
                             CategoriesId = 8
-                        });
-                });
-
-            modelBuilder.Entity("GoshehArtWebApp.Models.Asset", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Author")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly?>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Assets");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Author = "Fateme Gosheh",
-                            CategoryId = 8,
-                            Description = "Inte sett än",
-                            FileUrl = "/Assets/Filmproduktion/image (287).jpg",
-                            Name = "Dans under Vita Lakan",
-                            Type = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Author = "Fateme Gosheh",
-                            CategoryId = 6,
-                            Description = "Gods butt from above",
-                            FileUrl = "/Assets/Kontroversiell Konst/image (3).jpg",
-                            Name = "Aisha's Art",
-                            Type = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Author = "Fateme Gosheh",
-                            CategoryId = 8,
-                            Description = "Helt fantastiskt",
-                            FileUrl = "/Assets/Filmproduktion/image (304).jpg",
-                            Name = "Kari - Jag är elak",
-                            Type = 0
-                        });
-                });
-
-            modelBuilder.Entity("GoshehArtWebApp.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Film"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Liljevalchs 2001"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Stop-motion"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Press"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Foto"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Kontroversiell Konst"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Abstrakt Konst"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Akvarell Konst"
-                        });
-                });
-
-            modelBuilder.Entity("GoshehArtWebApp.Models.Color", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DarkEndColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("DarkOpacity")
-                        .HasColumnType("real");
-
-                    b.Property<string>("DarkStartColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EndColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Opacity")
-                        .HasColumnType("real");
-
-                    b.Property<string>("StartColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Colors");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DarkEndColor = "#000000",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#000000",
-                            EndColor = "#000000",
-                            Name = "Background Color",
-                            Opacity = 1f,
-                            StartColor = "#000000"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DarkEndColor = "#ffffff",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#ffffff",
-                            EndColor = "#ffffff",
-                            Name = "Header Text",
-                            Opacity = 1f,
-                            StartColor = "#ffffff"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DarkEndColor = "#ffffff",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#052e16",
-                            EndColor = "#ffffff",
-                            Name = "Navbar Background Color",
-                            Opacity = 1f,
-                            StartColor = "#ffff6a"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DarkEndColor = "#ffffff",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#000000",
-                            EndColor = "#ffffff",
-                            Name = "Page Header Text Color",
-                            Opacity = 1f,
-                            StartColor = "#ffffff"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DarkEndColor = "#ffffff",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#000000",
-                            EndColor = "#ffffff",
-                            Name = "Content Header Text Color",
-                            Opacity = 1f,
-                            StartColor = "#ffffff"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            DarkEndColor = "#ffffff",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#000000",
-                            EndColor = "#ffffff",
-                            Name = "Page Body Text Color",
-                            Opacity = 1f,
-                            StartColor = "#ffffff"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            DarkEndColor = "#ffffff",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#000000",
-                            EndColor = "#ffffff",
-                            Name = "Content Body Text Color",
-                            Opacity = 1f,
-                            StartColor = "#ffffff"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            DarkEndColor = "#052e16",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#052e16",
-                            EndColor = "#052e16",
-                            Name = "ScrollToTop Background Color",
-                            Opacity = 1f,
-                            StartColor = "#052e16"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            DarkEndColor = "#ffffff",
-                            DarkOpacity = 1f,
-                            DarkStartColor = "#ffffff",
-                            EndColor = "#000000",
-                            Name = "Navbar Text Color",
-                            Opacity = 1f,
-                            StartColor = "#000000"
-                        });
-                });
-
-            modelBuilder.Entity("GoshehArtWebApp.Models.Content", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Container")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateOnly?>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("PageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PageId");
-
-                    b.ToTable("Contents");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Container = "<p>Welcome</p>",
-                            PageId = 1,
-                            Title = "Welcome"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Container = "<p>Process:</p>",
-                            PageId = 2,
-                            Title = "This is what I'm working on"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Container = "<p>Early Life</p>",
-                            PageId = 3,
-                            Title = "Biography"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Container = "<p>Faceberrk</p>",
-                            PageId = 4,
-                            Title = "Social Media"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Container = "<p>We don't use cookies</p>",
-                            PageId = 5,
-                            Title = "Cookie Policy"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Container = "\r\n    <p><strong>Fateme Gosheh</strong> är en regissör, målare och fotograf född 1961 i Iran, numera bosatt och verksam i Sverige.</p>\r\n    <p>År 2002 ställde hon ut målningar under namnet <em>”En muslimsk kvinna – drömmar och mardrömmar”</em> på Liljevalchs vårsalong. Utställningen föreställde döda och nakna kvinnor tillsammans med olika muslimska symboler, något som väckte uppmärksamhet och ilska. För målningarna polisanmäldes hon för hets mot folkgrupp av Sveriges muslimska råd. Svenska Dagbladet och andra svenska tidningar som återgav hennes konst anmäldes också.</p>\r\n    <p>Trots hot fortsatte hon därefter med konst som utmanar islam.</p>\r\n    <p>År 2010 hade hennes dokumentärfilm <em>Tusen och en natt (jävla sköna män)</em> premiär.</p>\r\n    <p>Hennes verk har ställts ut runt om i världen, bland annat i Florens, New York och Los Angeles.</p>",
-                            PageId = 3,
-                            Title = "Wikipedia Profil"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Container = "\r\n            <h2>Privacy and Cookie Policy</h2>\r\n            <p>At Goshehart.se, we respect your privacy and are committed to protecting your personal data.</p>\r\n            <h3>Cookies</h3>\r\n            <p>Our website does not use cookies to track visitors or personalize content. The only cookies used are for authentication purposes on the backend, which is accessible only to the site owner (administrator) for managing the website. These cookies are essential for secure login and session management and do not affect public visitors.</p>\r\n            <h3>Personal Data</h3>\r\n            <p>We do not collect, track, or share any personal data from visitors. No personal information is gathered through this website.</p>\r\n            <h3>Data Security</h3>\r\n            <p>The backend login area is secured and accessible only by the site owner. We take reasonable measures to protect any stored data related to site administration.</p>\r\n            <h3>Your Rights</h3>\r\n            <p>Since we do not collect personal data from visitors, there are no user data requests applicable. If you have questions or concerns about privacy, please contact us at <a href='mailto:info@goshehart.se'>info@goshehart.se</a></p>",
-                            Date = new DateOnly(2025, 6, 3),
-                            PageId = 5,
-                            Title = "Privacy Policy"
-                        });
-                });
-
-            modelBuilder.Entity("GoshehArtWebApp.Models.Page", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Container")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Pages");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Container = "<p>Home</p>",
-                            Title = "Home"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Container = "<p>Production</p>",
-                            Title = "Production"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Container = "<p>About</p>",
-                            Title = "About"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Container = "<p>Email: <a href='mailto:info@goshehart.se'>info@goshehart.se</a></p>",
-                            Title = "Contact"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Container = "",
-                            Title = "Privacy"
                         });
                 });
 
@@ -656,29 +252,416 @@ namespace GoshehArtWebApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("WebAppBackend.Models.Asset", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Author")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly?>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ThumbnailUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Assets");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Author = "Fateme Gosheh",
+                            CategoryId = 8,
+                            Description = "Inte sett än",
+                            FileUrl = "/Assets/Filmproduktion/image (287).jpg",
+                            Name = "Dans under Vita Lakan",
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Author = "Fateme Gosheh",
+                            CategoryId = 6,
+                            Description = "Gods butt from above",
+                            FileUrl = "/Assets/Kontroversiell Konst/image (3).jpg",
+                            Name = "Aisha's Art",
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Author = "Fateme Gosheh",
+                            CategoryId = 8,
+                            Description = "Helt fantastiskt",
+                            FileUrl = "/Assets/Filmproduktion/image (304).jpg",
+                            Name = "Kari - Jag är elak",
+                            Type = 0
+                        });
+                });
+
+            modelBuilder.Entity("WebAppBackend.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Film"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Liljevalchs 2001"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Stop-motion"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Press"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Foto"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Kontroversiell Konst"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Abstrakt Konst"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Akvarell Konst"
+                        });
+                });
+
+            modelBuilder.Entity("WebAppBackend.Models.Color", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DarkEndColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("DarkOpacity")
+                        .HasColumnType("real");
+
+                    b.Property<string>("DarkStartColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EndColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Opacity")
+                        .HasColumnType("real");
+
+                    b.Property<string>("StartColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Colors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DarkEndColor = "#000000",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#000000",
+                            EndColor = "#000000",
+                            Name = "Background Color",
+                            Opacity = 1f,
+                            StartColor = "#000000"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DarkEndColor = "#ffffff",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#ffffff",
+                            EndColor = "#ffffff",
+                            Name = "Header Text",
+                            Opacity = 1f,
+                            StartColor = "#ffffff"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DarkEndColor = "#ffffff",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#052e16",
+                            EndColor = "#ffffff",
+                            Name = "Navbar Background Color",
+                            Opacity = 1f,
+                            StartColor = "#ffff6a"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DarkEndColor = "#ffffff",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#000000",
+                            EndColor = "#ffffff",
+                            Name = "Page Header Text Color",
+                            Opacity = 1f,
+                            StartColor = "#ffffff"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DarkEndColor = "#ffffff",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#000000",
+                            EndColor = "#ffffff",
+                            Name = "Content Header Text Color",
+                            Opacity = 1f,
+                            StartColor = "#ffffff"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DarkEndColor = "#ffffff",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#000000",
+                            EndColor = "#ffffff",
+                            Name = "Page Body Text Color",
+                            Opacity = 1f,
+                            StartColor = "#ffffff"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            DarkEndColor = "#ffffff",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#000000",
+                            EndColor = "#ffffff",
+                            Name = "Content Body Text Color",
+                            Opacity = 1f,
+                            StartColor = "#ffffff"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            DarkEndColor = "#052e16",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#052e16",
+                            EndColor = "#052e16",
+                            Name = "ScrollToTop Background Color",
+                            Opacity = 1f,
+                            StartColor = "#052e16"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            DarkEndColor = "#ffffff",
+                            DarkOpacity = 1f,
+                            DarkStartColor = "#ffffff",
+                            EndColor = "#000000",
+                            Name = "Navbar Text Color",
+                            Opacity = 1f,
+                            StartColor = "#000000"
+                        });
+                });
+
+            modelBuilder.Entity("WebAppBackend.Models.Content", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Container")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly?>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("PageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PageId");
+
+                    b.ToTable("Contents");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Container = "<p>Welcome</p>",
+                            PageId = 1,
+                            Title = "Welcome"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Container = "<p>Process:</p>",
+                            PageId = 2,
+                            Title = "This is what I'm working on"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Container = "<p>Early Life</p>",
+                            PageId = 3,
+                            Title = "Biography"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Container = "<p>Faceberrk</p>",
+                            PageId = 4,
+                            Title = "Social Media"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Container = "<p>We don't use cookies</p>",
+                            PageId = 5,
+                            Title = "Cookie Policy"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Container = "\n            <p>At __DOMAIN_NAME__, we respect your privacy and are committed to protecting your personal data.</p>\n            <h3>Cookies</h3>\n            <p>Our website does not use cookies to track visitors or personalize content. The only cookies used are for authentication purposes on the backend, which is accessible only to the site owner (administrator) for managing the website. These cookies are essential for secure login and session management and do not affect public visitors.</p>\n            <h3>Personal Data</h3>\n            <p>We do not collect, track, or share any personal data from visitors. No personal information is gathered through this website.</p>\n            <h3>Data Security</h3>\n            <p>The backend login area is secured and accessible only by the site owner. We take reasonable measures to protect any stored data related to site administration.</p>\n            <h3>Your Rights</h3>\n            <p>Since we do not collect personal data from visitors, there are no user data requests applicable. If you have questions or concerns about privacy, please contact us at <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>",
+                            Date = new DateOnly(2025, 6, 3),
+                            PageId = 5,
+                            Title = "Privacy Policy"
+                        });
+                });
+
+            modelBuilder.Entity("WebAppBackend.Models.Page", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Container")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Container = "<p>Home</p>",
+                            Title = "Home"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Container = "<p>Production</p>",
+                            Title = "Production"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Container = "<p>About</p>",
+                            Title = "About"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Container = "<p>Email: <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>",
+                            Title = "Contact"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Container = "",
+                            Title = "Privacy"
+                        });
+                });
+
             modelBuilder.Entity("AssetCategory", b =>
                 {
-                    b.HasOne("GoshehArtWebApp.Models.Asset", null)
+                    b.HasOne("WebAppBackend.Models.Asset", null)
                         .WithMany()
                         .HasForeignKey("AssetsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GoshehArtWebApp.Models.Category", null)
+                    b.HasOne("WebAppBackend.Models.Category", null)
                         .WithMany()
                         .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("GoshehArtWebApp.Models.Content", b =>
-                {
-                    b.HasOne("GoshehArtWebApp.Models.Page", "Page")
-                        .WithMany("Contents")
-                        .HasForeignKey("PageId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -732,7 +715,17 @@ namespace GoshehArtWebApp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GoshehArtWebApp.Models.Page", b =>
+            modelBuilder.Entity("WebAppBackend.Models.Content", b =>
+                {
+                    b.HasOne("WebAppBackend.Models.Page", "Page")
+                        .WithMany("Contents")
+                        .HasForeignKey("PageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("WebAppBackend.Models.Page", b =>
                 {
                     b.Navigation("Contents");
                 });
