@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace GoshehArtWebApp.Migrations
+namespace WebAppBackend.Migrations
 {
     /// <inheritdoc />
     public partial class init : Migration
@@ -95,8 +95,10 @@ namespace GoshehArtWebApp.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EndColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Opacity = table.Column<float>(type: "real", nullable: false),
                     DarkStartColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DarkEndColor = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DarkEndColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DarkOpacity = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -163,8 +165,8 @@ namespace GoshehArtWebApp.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -208,8 +210,8 @@ namespace GoshehArtWebApp.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -296,11 +298,18 @@ namespace GoshehArtWebApp.Migrations
 
             migrationBuilder.InsertData(
                 table: "Colors",
-                columns: new[] { "Id", "DarkEndColor", "DarkStartColor", "EndColor", "Name", "StartColor" },
+                columns: new[] { "Id", "DarkEndColor", "DarkOpacity", "DarkStartColor", "EndColor", "Name", "Opacity", "StartColor" },
                 values: new object[,]
                 {
-                    { 1, "#000000", "#000000", "#000000", "Background Color", "#000000" },
-                    { 2, "#000000", "#000000", "#000000", "Header Text", "#000000" }
+                    { 1, "#000000", 1f, "#000000", "#000000", "Background Color", 1f, "#000000" },
+                    { 2, "#ffffff", 1f, "#ffffff", "#ffffff", "Header Text", 1f, "#ffffff" },
+                    { 3, "#ffffff", 1f, "#052e16", "#ffffff", "Navbar Background Color", 1f, "#ffff6a" },
+                    { 4, "#ffffff", 1f, "#000000", "#ffffff", "Page Header Text Color", 1f, "#ffffff" },
+                    { 5, "#ffffff", 1f, "#000000", "#ffffff", "Content Header Text Color", 1f, "#ffffff" },
+                    { 6, "#ffffff", 1f, "#000000", "#ffffff", "Page Body Text Color", 1f, "#ffffff" },
+                    { 7, "#ffffff", 1f, "#000000", "#ffffff", "Content Body Text Color", 1f, "#ffffff" },
+                    { 8, "#052e16", 1f, "#052e16", "#052e16", "ScrollToTop Background Color", 1f, "#052e16" },
+                    { 9, "#ffffff", 1f, "#ffffff", "#000000", "Navbar Text Color", 1f, "#000000" }
                 });
 
             migrationBuilder.InsertData(
@@ -308,11 +317,11 @@ namespace GoshehArtWebApp.Migrations
                 columns: new[] { "Id", "Container", "Title" },
                 values: new object[,]
                 {
-                    { 1, "Home", "Home" },
-                    { 2, "Production", "Production" },
-                    { 3, "About", "About" },
-                    { 4, "Contact", "Contact" },
-                    { 5, "Privacy", "Privacy" }
+                    { 1, "<p>Home</p>", "Home" },
+                    { 2, "<p>Production</p>", "Production" },
+                    { 3, "<p>About</p>", "About" },
+                    { 4, "<p>Email: <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>", "Contact" },
+                    { 5, "", "Privacy" }
                 });
 
             migrationBuilder.InsertData(
@@ -330,12 +339,12 @@ namespace GoshehArtWebApp.Migrations
                 columns: new[] { "Id", "Container", "Date", "PageId", "Title" },
                 values: new object[,]
                 {
-                    { 1, "Welcome", null, 1, "Welcome" },
-                    { 2, "Process:", null, 2, "This is what I'm working on" },
-                    { 3, "Early Life", null, 3, "Biography" },
-                    { 4, "Faceberrk", null, 4, "Social Media" },
-                    { 5, "We don't use cookies", null, 5, "Cookie Policy" },
-                    { 6, "Pending", null, 5, "Privacy Policy" }
+                    { 1, "<p>Welcome</p>", null, 1, "Welcome" },
+                    { 2, "<p>Process:</p>", null, 2, "This is what I'm working on" },
+                    { 3, "<p>Early Life</p>", null, 3, "Biography" },
+                    { 4, "<p>Faceberrk</p>", null, 4, "Social Media" },
+                    { 5, "<p>We don't use cookies</p>", null, 5, "Cookie Policy" },
+                    { 6, "\n            <p>At __DOMAIN_NAME__, we respect your privacy and are committed to protecting your personal data.</p>\n            <h3>Cookies</h3>\n            <p>Our website does not use cookies to track visitors or personalize content. The only cookies used are for authentication purposes on the backend, which is accessible only to the site owner (administrator) for managing the website. These cookies are essential for secure login and session management and do not affect public visitors.</p>\n            <h3>Personal Data</h3>\n            <p>We do not collect, track, or share any personal data from visitors. No personal information is gathered through this website.</p>\n            <h3>Data Security</h3>\n            <p>The backend login area is secured and accessible only by the site owner. We take reasonable measures to protect any stored data related to site administration.</p>\n            <h3>Your Rights</h3>\n            <p>Since we do not collect personal data from visitors, there are no user data requests applicable. If you have questions or concerns about privacy, please contact us at <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>", new DateOnly(2025, 6, 3), 5, "Privacy Policy" }
                 });
 
             migrationBuilder.CreateIndex(
