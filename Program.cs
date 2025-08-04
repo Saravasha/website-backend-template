@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
 using WebAppBackend.Data;
 using WebAppBackend.Services;
-using Microsoft.Data.SqlClient;
+using WebAppBackend.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -127,9 +128,19 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
+        // Apply migrations
         Console.WriteLine("Applying EF Core migrations...");
         dbContext.Database.Migrate();
         Console.WriteLine("Migrations applied.");
+
+        // Wait for identity tables
+        Console.WriteLine("Waiting for identity tables...");
+        var identityReady = await DatabaseReadyChecker.WaitForIdentityTablesAsync(dbContext);
+        if (!identityReady)
+        {
+            throw new Exception("Identity tables were not created in time.");
+        }
+        Console.WriteLine("Identity tables are ready.");
 
         Console.WriteLine("Seeding database...");
         await SeedData.InitializeAsync(services, config);
