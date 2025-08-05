@@ -6,7 +6,6 @@ using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
 using WebAppBackend.Data;
 using WebAppBackend.Services;
-using WebAppBackend.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
