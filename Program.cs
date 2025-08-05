@@ -133,21 +133,11 @@ using (var scope = app.Services.CreateScope())
         dbContext.Database.Migrate();
         Console.WriteLine("Migrations applied.");
 
-        // Wait for identity tables
-        Console.WriteLine("Waiting for identity tables...");
-        var identityReady = await DatabaseReadyChecker.WaitForIdentityTablesAsync(dbContext);
-        if (!identityReady)
-        {
-            throw new Exception("Identity tables were not created in time.");
-        }
-        Console.WriteLine("Identity tables are ready.");
-
         Console.WriteLine("Seeding database...");
         await SeedData.InitializeAsync(services, config);
         Console.WriteLine("Seeding complete.");
 
         // Add robots.txt for staging
-        
         var filePathProvider = services.GetRequiredService<FilePathProvider>();
         var robotsPath = filePathProvider.RobotsTxtPath;
 
