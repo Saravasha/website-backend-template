@@ -53,7 +53,16 @@ namespace WebAppBackend.Data
                 new Content { Id = 3, Title = "Biography", Container = @"<p>Early Life</p>", PageId = 3 },
                 new Content { Id = 4, Title = "Social Media", Container = @"<p>Faceberrk</p>", PageId = 4 },
                 new Content { Id = 5, Title = "Cookie Policy", Container = @"<p>We don't use cookies</p>", PageId = 5 },
-                new Content { Id = 6, Title = "Privacy Policy", Container = @"<p>At __DOMAIN_NAME__, we respect your privacy and are committed to protecting your personal data.</p><h3>Cookies</h3><p>Our website does not use cookies to track visitors or personalize content. The only cookies used are for authentication purposes on the backend, which is accessible only to the site owner (administrator) for managing the website. These cookies are essential for secure login and session management and do not affect public visitors.</p><h3>Personal Data</h3><p>We do not collect, track, or share any personal data from visitors. No personal information is gathered through this website.</p><h3>Data Security</h3><p>The backend login area is secured and accessible only by the site owner. We take reasonable measures to protect any stored data related to site administration.</p><h3>Your Rights</h3><p>Since we do not collect personal data from visitors, there are no user data requests applicable. If you have questions or concerns about privacy, please contact us at <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>", PageId = 5, Date = new DateOnly(2025, 6, 3) }
+                new Content { Id = 6, Title = "Privacy Policy", Container = @"
+            <p>At __DOMAIN_NAME__, we respect your privacy and are committed to protecting your personal data.</p>
+            <h3>Cookies</h3>
+            <p>Our website does not use cookies to track visitors or personalize content. The only cookies used are for authentication purposes on the backend, which is accessible only to the site owner (administrator) for managing the website. These cookies are essential for secure login and session management and do not affect public visitors.</p>
+            <h3>Personal Data</h3>
+            <p>We do not collect, track, or share any personal data from visitors. No personal information is gathered through this website.</p>
+            <h3>Data Security</h3>
+            <p>The backend login area is secured and accessible only by the site owner. We take reasonable measures to protect any stored data related to site administration.</p>
+            <h3>Your Rights</h3>
+            <p>Since we do not collect personal data from visitors, there are no user data requests applicable. If you have questions or concerns about privacy, please contact us at <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>", PageId = 5, Date = new DateOnly(2025, 6, 3) }
             );
 
             modelbuilder.Entity<Category>().HasData(
