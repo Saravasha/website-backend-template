@@ -59,6 +59,9 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+builder.Services.AddLogging();
+
+// Services Block
 builder.Services.AddDirectoryBrowser();
 builder.Services.AddScoped<FilePathProvider>();
 builder.Services.AddScoped<VideoThumbnailProvider>();
@@ -74,7 +77,6 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader();
     })
 );
-
 
 // Identity options
 builder.Services.Configure<IdentityOptions>(options =>
@@ -124,6 +126,9 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var dbContext = services.GetRequiredService<ApplicationDbContext>();
     var config = services.GetRequiredService<IConfiguration>();
+    var env = services.GetRequiredService<IHostEnvironment>();
+    var filePathProvider = services.GetRequiredService<FilePathProvider>();
+    var robotsPath = filePathProvider.RobotsTxtPath;
 
     try
     {
@@ -131,20 +136,29 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("Applying EF Core migrations...");
         dbContext.Database.Migrate();
         Console.WriteLine("Migrations applied.");
-
+        // Seed Database
         Console.WriteLine("Seeding database...");
         await SeedData.InitializeAsync(services, config);
         Console.WriteLine("Seeding complete.");
 
-        // Add robots.txt for staging
-        var filePathProvider = services.GetRequiredService<FilePathProvider>();
-        var robotsPath = filePathProvider.RobotsTxtPath;
 
-        if (!File.Exists(robotsPath))
+        if (env.IsStaging())
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(robotsPath)!);
-            File.WriteAllText(robotsPath, "User-agent: *\nDisallow: /");
-            Console.WriteLine("Created staging robots.txt to block crawlers.");
+            if (!File.Exists(robotsPath))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(robotsPath)!);
+                File.WriteAllText(robotsPath, "User-agent: *\nDisallow: /");
+                Console.WriteLine("Created staging robots.txt to block crawlers (staging environment).");
+            }
+        }
+        else
+        {
+            // Not staging — remove robots.txt if it exists
+            if (File.Exists(robotsPath))
+            {
+                File.Delete(robotsPath);
+                Console.WriteLine("Deleted robots.txt from non-staging environment.");
+            }
         }
     }
     catch (Exception ex)
@@ -209,4 +223,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-app.Run();  
+app.Run();
