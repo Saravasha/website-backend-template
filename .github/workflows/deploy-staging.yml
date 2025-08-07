@@ -76,9 +76,7 @@ jobs:
           Smtp__From: ${{ secrets.SMTP_FROM }}
           Smtp__Port: ${{ secrets.SMTP_PORT }}
         run: |
-          pm2 resurrect
-          pm2 ls
-          pm2 stop backend-production || true
+          pm2 delete backend-production || true
 
           DOTNET_ENVIRONMENT=Production \
           ASPNETCORE_ENVIRONMENT=Production \

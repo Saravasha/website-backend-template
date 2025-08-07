@@ -58,9 +58,7 @@ jobs:
 
       - name: Deploy with PM2
         run: |
-          pm2 resurrect
-          pm2 ls
-          pm2 stop backend-staging || true
+          pm2 delete backend-staging || true
 
           DOTNET_ENVIRONMENT=Staging \
           ASPNETCORE_ENVIRONMENT=Staging \
