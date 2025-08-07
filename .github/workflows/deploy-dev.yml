@@ -73,7 +73,8 @@ jobs:
           Smtp__Port="${{ secrets.SMTP_PORT }}" \
           pm2 start /opt/actions-runners/backend-staging/_work/__BACKEND_NAME__/__BACKEND_NAME__/WebAppBackend.dll \
             --name backend-staging \
-            --interpreter dotnet
+            --interpreter dotnet \
+            --update-env
 
           pm2 save
 
