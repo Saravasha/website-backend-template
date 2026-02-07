@@ -1,4 +1,4 @@
-name: Deploy to Production
+name: Deploy to Production from Staging
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   deploy:
+    name: Build and Deploy Backend to Production
     runs-on: [self-hosted, Production]
 
     strategy:
@@ -32,7 +33,7 @@ jobs:
       - name: Set HOME environment variable
         run: echo "HOME=/home/runner" >> $GITHUB_ENV
 
-      - name: Setup .NET SDK ${{ matrix.dotnet }}
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet }}
@@ -44,39 +45,31 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish app
-        run: dotnet publish -c Release -o /opt/actions-runners/backend-production/_work/__BACKEND_NAME__/__BACKEND_NAME__
+        run: dotnet publish -c Release -o __BACKEND_PUBLISH_PATH__
+
       - name: Verify publish output
         run: |
           echo "Checking published files..."
-          ls -l /opt/actions-runners/backend-production/_work/__BACKEND_NAME__/__BACKEND_NAME__/wwwroot
-          if [ ! -d "/opt/actions-runners/backend-production/_work/__BACKEND_NAME__/__BACKEND_NAME__/wwwroot" ]; then
+          ls -l __BACKEND_PUBLISH_PATH__/wwwroot
+
+          if [ ! -d "__BACKEND_PUBLISH_PATH__/wwwroot" ]; then
             echo "ERROR: wwwroot directory does not exist!"
             exit 1
           fi
-      
-          if [ -z "$(ls -A /opt/actions-runners/backend-production/_work/__BACKEND_NAME__/__BACKEND_NAME__/wwwroot)" ]; then
+
+          if [ -z "$(ls -A __BACKEND_PUBLISH_PATH__/wwwroot)" ]; then
             echo "ERROR: wwwroot directory is empty!"
             exit 1
           fi
-      
-          # Optional: check for your specific CSS file
-          if [ ! -f "/opt/actions-runners/backend-production/_work/__BACKEND_NAME__/__BACKEND_NAME__/wwwroot/WebAppBackend.styles.css" ]; then
+
+          if [ ! -f "__BACKEND_PUBLISH_PATH__/wwwroot/WebAppBackend.styles.css" ]; then
             echo "ERROR: WebAppBackend.styles.css file is missing!"
             exit 1
           fi
+
       - name: Deploy with PM2
-        env:
-          DOTNET_ENVIRONMENT: Production
-          ASPNETCORE_ENVIRONMENT: Production
-          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          Smtp__Host: ${{ secrets.SMTP_HOST }}
-          Smtp__Username: ${{ secrets.SMTP_USERNAME }}
-          Smtp__Password: ${{ secrets.SMTP_PASSWORD }}
-          Smtp__From: ${{ secrets.SMTP_FROM }}
-          Smtp__Port: ${{ secrets.SMTP_PORT }}
         run: |
-          pm2 delete backend-production || true
+          pm2 delete __PM2_APP_NAME__ || true
 
           DOTNET_ENVIRONMENT=Production \
           ASPNETCORE_ENVIRONMENT=Production \
@@ -87,8 +80,8 @@ jobs:
           Smtp__Password="${{ secrets.SMTP_PASSWORD }}" \
           Smtp__From="${{ secrets.SMTP_FROM }}" \
           Smtp__Port="${{ secrets.SMTP_PORT }}" \
-          pm2 start /opt/actions-runners/backend-production/_work/__BACKEND_NAME__/__BACKEND_NAME__/WebAppBackend.dll \
-            --name backend-production \
+          pm2 start __BACKEND_DLL_PATH__ \
+            --name __PM2_APP_NAME__ \
             --interpreter dotnet \
             --update-env
 
