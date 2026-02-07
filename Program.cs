@@ -213,6 +213,14 @@ using (var scope = app.Services.CreateScope())
     AddStaticFilesRecursively(filePathProvider.WebAssetsRoot, app);
 }
 
+// Use BasePath for Platform Apps
+#if USE_API_BASE_PATH
+if (!string.IsNullOrEmpty(builder.Configuration["BasePath"]))
+{
+    app.UsePathBase(builder.Configuration["BasePath"]);
+}
+#endif
+
 app.UseRouting();
 app.UseCors("corsPolicy");
 app.UseAuthentication();
