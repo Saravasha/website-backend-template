@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Build and Deploy Backend to Staging  
+    name: Build and Deploy Backend to Staging
     runs-on: [self-hosted, Staging]
 
     strategy:
@@ -50,8 +50,8 @@ jobs:
       - name: Apply EF Core Migrations
         working-directory: __BACKEND_PUBLISH_PATH__
         env:
-            DOTNET_ENVIRONMENT: Staging
-            CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_STAGING }}
+          DOTNET_ENVIRONMENT: Staging
+          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_STAGING }}
         run: |
           dotnet tool update --global dotnet-ef || true
           export PATH="$PATH:$HOME/.dotnet/tools"
@@ -59,23 +59,23 @@ jobs:
 
       - name: Deploy with PM2
         run: |
-            pm2 delete __PM2_APP_NAME__ || true
+          pm2 delete __PM2_APP_NAME__ || true
 
-            DOTNET_ENVIRONMENT=Staging \
-            ASPNETCORE_ENVIRONMENT=Staging \
-            CONNECTION_STRING="${{ secrets.CONNECTION_STRING_STAGING }}" \
-            ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD_STAGING }}" \
-            Smtp__Host="${{ secrets.SMTP_HOST }}" \
-            Smtp__Username="${{ secrets.SMTP_USERNAME }}" \
-            Smtp__Password="${{ secrets.SMTP_PASSWORD }}" \
-            Smtp__From="${{ secrets.SMTP_FROM }}" \
-            Smtp__Port="${{ secrets.SMTP_PORT }}" \
-            pm2 start __BACKEND_DLL_PATH__ \
-                --name __PM2_APP_NAME__ \
-                --interpreter dotnet \
-                --update-env
+          DOTNET_ENVIRONMENT=Staging \
+          ASPNETCORE_ENVIRONMENT=Staging \
+          CONNECTION_STRING="${{ secrets.CONNECTION_STRING_STAGING }}" \
+          ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD_STAGING }}" \
+          Smtp__Host="${{ secrets.SMTP_HOST }}" \
+          Smtp__Username="${{ secrets.SMTP_USERNAME }}" \
+          Smtp__Password="${{ secrets.SMTP_PASSWORD }}" \
+          Smtp__From="${{ secrets.SMTP_FROM }}" \
+          Smtp__Port="${{ secrets.SMTP_PORT }}" \
+          pm2 start __BACKEND_DLL_PATH__ \
+              --name __PM2_APP_NAME__ \
+              --interpreter dotnet \
+              --update-env
 
-            pm2 save
+          pm2 save
 
       - name: Reload Nginx
         run: sudo service nginx reload
