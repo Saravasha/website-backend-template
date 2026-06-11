@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace WebAppBackend.Data
 {
@@ -18,7 +16,7 @@ namespace WebAppBackend.Data
 
             // Get password from secrets or environment
             string? adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? configuration["Passwords:Admin"];
-         
+
 
             var env = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
@@ -62,12 +60,6 @@ namespace WebAppBackend.Data
                 if (!resetResult.Succeeded)
                     throw new Exception("Failed to reset admin password: " +
                         string.Join(", ", resetResult.Errors.Select(e => e.Description)));
-            }
-
-            // Add to Admin role if not already
-            if (!await userManager.IsInRoleAsync(adminUser, adminRole))
-            {
-                await userManager.AddToRoleAsync(adminUser, adminRole);
             }
 
             // Ensure user is in Admin role
