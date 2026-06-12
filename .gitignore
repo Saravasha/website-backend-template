@@ -6,3 +6,7 @@
 /.config
 /.vs
 /wwwroot/robots.txt
+bin/
+obj
+/**/bin/
+**/obj/
