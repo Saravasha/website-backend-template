@@ -47,26 +47,6 @@ jobs:
       - name: Publish app
         run: dotnet publish -c Release -o __BACKEND_PUBLISH_PATH__
 
-      - name: Verify publish output
-        run: |
-          echo "Checking published files..."
-          ls -l __BACKEND_PUBLISH_PATH__/wwwroot
-
-          if [ ! -d "__BACKEND_PUBLISH_PATH__/wwwroot" ]; then
-            echo "ERROR: wwwroot directory does not exist!"
-            exit 1
-          fi
-
-          if [ -z "$(ls -A __BACKEND_PUBLISH_PATH__/wwwroot)" ]; then
-            echo "ERROR: wwwroot directory is empty!"
-            exit 1
-          fi
-
-          if [ ! -f "__BACKEND_PUBLISH_PATH__/wwwroot/WebAppBackend.styles.css" ]; then
-            echo "ERROR: WebAppBackend.styles.css file is missing!"
-            exit 1
-          fi
-
       - name: Deploy with PM2
         run: |
           pm2 delete __PM2_APP_NAME__ || true

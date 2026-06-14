@@ -7,7 +7,14 @@ using System.Text.Json.Serialization;
 using WebAppBackend.Data;
 using WebAppBackend.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = AppContext.BaseDirectory
+
+    // prevents missing scaffolded css files
+});
+
 
 // Load environment variables
 builder.Configuration.AddEnvironmentVariables();
