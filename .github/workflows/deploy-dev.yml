@@ -48,14 +48,25 @@ jobs:
         run: dotnet publish -c Release -o __BACKEND_PUBLISH_PATH__
 
       - name: Apply EF Core Migrations
-        working-directory: __BACKEND_PUBLISH_PATH__
+        working-directory: /opt/actions-runners/Saravasha-Test-backend-staging/_work/Saravasha-Test-backend/Saravasha-Test-backend
         env:
           DOTNET_ENVIRONMENT: Staging
+          ASPNETCORE_ENVIRONMENT: Staging
           CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_STAGING }}
         run: |
+          set -euo pipefail
+
           dotnet tool update --global dotnet-ef || true
           export PATH="$PATH:$HOME/.dotnet/tools"
-          dotnet ef database update --no-build --verbose
+
+          echo "🧹 Ensuring clean build..."
+          dotnet clean -c Release || true
+
+          echo "🔧 Building Release..."
+          dotnet build -c Release --no-restore
+
+          echo "🗄 Running EF migrations..."
+          dotnet ef database updat
 
       - name: Deploy with PM2
         run: |
