@@ -34,13 +34,20 @@ namespace WebAppBackend.Controllers
             return categories;
         }
 
-        [HttpGet("page")]
-        public List<Page> GetPages()
-        {
-            List<Page> pages = new List<Page>();
-            pages = _context.Pages.Include(c => c.Contents).ToList();
-            return pages;
-        }
+       [HttpGet("page")]
+       public List<Page> GetPages()
+       {
+           return _context.Pages
+               .Select(p => new Page
+               {
+                   Id = p.Id,
+                   Title = p.Title,
+                   Contents = p.Contents
+                       .OrderByDescending(c => c.Id) // Reversed order for Contents in Pages, so newest content in a page shows first, the navbar will reflect this effect too etc...
+                       .ToList()
+               })
+               .ToList();
+       }
 
         [HttpGet("color")]
         public List<Color> GetColors()
