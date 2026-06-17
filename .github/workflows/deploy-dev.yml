@@ -48,7 +48,7 @@ jobs:
         run: dotnet publish -c Release -o __BACKEND_PUBLISH_PATH__
 
       - name: Apply EF Core Migrations
-        working-directory: /opt/actions-runners/Saravasha-Test-backend-staging/_work/Saravasha-Test-backend/Saravasha-Test-backend
+        working-directory: __BACKEND_ROOT_PATH__
         env:
           DOTNET_ENVIRONMENT: Staging
           ASPNETCORE_ENVIRONMENT: Staging
