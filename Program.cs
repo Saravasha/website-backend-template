@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -112,6 +113,16 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(10);
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
+
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
 Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
 
@@ -188,6 +199,15 @@ if (smtpSettings == null ||
     throw new InvalidOperationException("Missing required SMTP configuration values.");
 }
 
+// Use BasePath for Platform Apps
+app.UseForwardedHeaders();
+
+if (!string.IsNullOrEmpty(builder.Configuration["BasePath"]))
+{
+    Console.WriteLine($"Applying BasePath: {builder.Configuration["BasePath"]}");
+    app.UsePathBase(builder.Configuration["BasePath"]);
+}
+
 // Serve static files
 app.UseStaticFiles();
 
@@ -220,14 +240,7 @@ using (var scope = app.Services.CreateScope())
     AddStaticFilesRecursively(filePathProvider.WebAssetsRoot, app);
 }
 
-// Use BasePath for Platform Apps
 app.UseForwardedHeaders();
-
-if (!string.IsNullOrEmpty(builder.Configuration["BasePath"]))
-{
-    app.UsePathBase(builder.Configuration["BasePath"]);
-}
-
 app.UseRouting();
 app.UseCors("corsPolicy");
 app.UseAuthentication();
