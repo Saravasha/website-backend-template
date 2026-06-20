@@ -221,12 +221,12 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Use BasePath for Platform Apps
-#if USE_API_BASE_PATH
+app.UseForwardedHeaders();
+
 if (!string.IsNullOrEmpty(builder.Configuration["BasePath"]))
 {
     app.UsePathBase(builder.Configuration["BasePath"]);
 }
-#endif
 
 app.UseRouting();
 app.UseCors("corsPolicy");
