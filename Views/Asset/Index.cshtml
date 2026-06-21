@@ -67,20 +67,20 @@
                             @switch (asset.Type)
                             {
                                 case AssetType.Image:
-                                    <img src="@Url.Content(asset.FileUrl)" alt="@asset.Name" class="img-fluid rounded border" style="max-height: 100px; object-fit: cover;" loading="lazy" />
+                                    <img src="@($"{Context.Request.PathBase}{asset.FileUrl}")" alt="@asset.Name" class="img-fluid rounded border" style="max-height: 100px; object-fit: cover;" loading="lazy" />
                                     break;
                                 case AssetType.Video:
                                     if (!string.IsNullOrEmpty(asset.ThumbnailUrl))
                                     {
                                     <div class="position-relative video-thumb" style="cursor: pointer;" data-toggle="modal" data-target="#videoModal-@asset.Id">
-                                        <img src="@Url.Content(asset.ThumbnailUrl)" alt="Video Thumbnail" class="img-fluid rounded" loading="lazy" />
+                                        <img src="@($"{Context.Request.PathBase}{asset.ThumbnailUrl}")" alt="Video Thumbnail" class="img-fluid rounded" loading="lazy" />
                                         <i class="bi bi-play-circle-fill position-absolute" style="top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; color: white;"></i>
                                     </div>
                                     }
                                     else
                                     {
                                         <video controls preload="none" class="w-100" style="max-height: 100px;">
-                                            <source src="@Url.Content(asset.FileUrl)" type="video/mp4" />
+                                            <source src="@($"{Context.Request.PathBase}{asset.FileUrl}")" type="video/mp4" />
                                         </video>
                                     }
                                     break;

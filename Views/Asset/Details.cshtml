@@ -14,19 +14,19 @@
                 @switch (Model.Type)
                 {
                     case AssetType.Image:
-                        <img src="@Url.Content(Model.FileUrl)" class="img-fluid rounded border" style="max-height: 400px;" alt="Image Preview" loading="lazy" />
+                        <img src="@($"{Context.Request.PathBase}{Model.FileUrl}")" class="img-fluid rounded border" style="max-height: 400px;" alt="Image Preview" loading="lazy" />
                         break;
 
                     case AssetType.Video:
                         <video controls class="w-100 rounded border" style="max-height: 400px;">
-                            <source src="@Url.Content(Model.FileUrl)" type="video/mp4" />
+                            <source src="@($"{Context.Request.PathBase}{Model.FileUrl}")" type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
                         break;
 
                     case AssetType.Audio:
                         <audio controls class="w-100 mt-3">
-                            <source src="@Url.Content(Model.FileUrl)" type="audio/mpeg" />
+                            <source src="@($"{Context.Request.PathBase}{Model.FileUrl}")" type="audio/mpeg" />
                             Your browser does not support the audio element.
                         </audio>
                         break;
