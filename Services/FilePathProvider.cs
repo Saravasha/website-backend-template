@@ -23,13 +23,13 @@
         if (fullPath.StartsWith(uploadsRoot, StringComparison.OrdinalIgnoreCase))
         {
             var relativePath = fullPath.Substring(uploadsRoot.Length);
-            return "/Uploads/" + relativePath.Replace("\\", "/");
+            return "~/Uploads/" + relativePath.Replace("\\", "/");
         }
 
         if (fullPath.StartsWith(webRoot, StringComparison.OrdinalIgnoreCase))
         {
             var relativePath = fullPath.Substring(webRoot.Length);
-            return "/" + relativePath.Replace("\\", "/");
+            return "~/" + relativePath.Replace("\\", "/");
         }
 
         // Debug fallback
