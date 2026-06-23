@@ -14,7 +14,8 @@ namespace WebAppBackend.Controllers
 
         private readonly ApplicationDbContext _context;
 
-        public PageContentController(ApplicationDbContext context) { 
+        public PageContentController(ApplicationDbContext context)
+        {
             _context = context;
         }
 
@@ -50,9 +51,10 @@ namespace WebAppBackend.Controllers
                     await file.CopyToAsync(stream);
                 }
 
-           
-                    var fileUrl = $"/Uploads/{fileName}";
-                    return Json(new { success = true, url = fileUrl });
+
+                var fileUrl = $"/Uploads/{fileName}";
+                var publicUrl = $"{Request.PathBase}{fileUrl}";
+                return Json(new { success = true, url = publicUrl });
             }
 
             return Json(new { url = "" });
