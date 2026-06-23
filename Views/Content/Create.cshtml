@@ -97,6 +97,12 @@
         let debounceTimer;
         let allAssets = [];
 
+        const basePath = '@Context.Request.PathBase';
+
+        function apiUrl(path) {
+            return `${basePath}${path}`;
+        }
+
         $(function () {
             initSummernote();
             setupAssetModal();
@@ -182,7 +188,7 @@
                 formData.append('file', file);
 
                 $.ajax({
-                    url: '/PageContent/UploadFile',
+                    url: apiUrl('/PageContent/UploadFile'),
                     method: 'POST',
                     data: formData,
                     contentType: false,
@@ -243,7 +249,7 @@
 
         async function loadCategories() {
             try {
-                const res = await fetch('/api/react/category');
+                const res = await fetch(apiUrl('/api/react/category'));
                 const categories = await res.json();
                 const select = $('#categorySelect');
                 select.empty().append('<option value="">All Categories</option>');
@@ -257,7 +263,7 @@
 
         function loadAssets(params = {}) {
             if (!allAssets.length) {
-                fetch('/api/react/asset')
+                fetch(apiUrl('/api/react/asset'))
                     .then(res => res.json())
                     .then(data => {
                         allAssets = data;

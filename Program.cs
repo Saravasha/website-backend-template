@@ -240,7 +240,6 @@ using (var scope = app.Services.CreateScope())
     AddStaticFilesRecursively(filePathProvider.WebAssetsRoot, app);
 }
 
-app.UseForwardedHeaders();
 app.UseRouting();
 app.UseCors("corsPolicy");
 app.UseAuthentication();
