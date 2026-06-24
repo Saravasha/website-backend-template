@@ -53,8 +53,8 @@ namespace WebAppBackend.Controllers
 
 
                 var fileUrl = $"/Uploads/{fileName}";
-                var publicUrl = $"{Request.PathBase}{fileUrl}";
-                return Json(new { success = true, url = publicUrl });
+                var absoluteUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{fileUrl}";
+                return Json(new { success = true, url = absoluteUrl });
             }
 
             return Json(new { url = "" });
