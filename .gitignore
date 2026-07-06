@@ -15,4 +15,4 @@ bin/
 obj/
 
 /**/bin/
-**/obj/
+**/obj/.multi-committer-backup/

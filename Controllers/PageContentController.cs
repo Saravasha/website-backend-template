@@ -56,6 +56,7 @@ namespace WebAppBackend.Controllers
                 var absoluteUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{fileUrl}";
                 return Json(new { success = true, url = absoluteUrl });
             }
+            // Banana
 
             return Json(new { url = "" });
         }
