@@ -16,3 +16,4 @@ obj/
 
 /**/bin/
 **/obj/.multi-committer-backup/
+.multi-committer-backup/
