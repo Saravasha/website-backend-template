@@ -11,18 +11,9 @@ namespace WebAppBackend.Services
         {
             _filePathProvider = filePathProvider;
         }
-
-        public async Task<string?> GenerateAsync(string videoPath, string videoFileName)
+        private async Task<string?> GenerateThumbnailCore(string videoPath, string thumbnailPath)
         {
-            if (!Directory.Exists(_filePathProvider.ThumbnailsRoot))
-            {
-                Directory.CreateDirectory(_filePathProvider.ThumbnailsRoot);
-            }
-
-            string thumbnailFileName = Path.GetFileNameWithoutExtension(videoFileName) + "_thumb.jpg";
-            string thumbnailPath = Path.Combine(_filePathProvider.ThumbnailsRoot, thumbnailFileName);
-
-            var ffmpegArgs = $"-i \"{videoPath}\" -ss 00:00:01 -vframes 1 -q:v 2 \"{thumbnailPath}\"";
+            var ffmpegArgs = $"-y -i \"{videoPath}\" -ss 00:00:01 -vframes 1 -q:v 2 \"{thumbnailPath}\"";
 
             var process = new Process
             {
@@ -57,6 +48,33 @@ namespace WebAppBackend.Services
                 Console.WriteLine("FFmpeg failed: " + ex.Message);
                 return null;
             }
+
         }
+
+        public async Task<string?> GeneratePublishAsync(string videoPath)
+        {
+            var directory = Path.GetDirectoryName(videoPath)!;
+
+            var thumbnailFileName = Path.GetFileNameWithoutExtension(videoPath) + "_thumb.jpg";
+
+            var thumbnailPath = Path.Combine(directory, thumbnailFileName);
+
+            return await GenerateThumbnailCore(videoPath, thumbnailPath);
+        }
+
+        public async Task<string?> GenerateAsync(string videoPath, string videoFileName)
+        {
+            if (!Directory.Exists(_filePathProvider.ThumbnailsRoot))
+            {
+                Directory.CreateDirectory(_filePathProvider.ThumbnailsRoot);
+            }
+
+            string thumbnailFileName = Path.GetFileNameWithoutExtension(videoFileName) + "_thumb.jpg";
+            string thumbnailPath = Path.Combine(_filePathProvider.ThumbnailsRoot, thumbnailFileName);
+
+            return await GenerateThumbnailCore(videoPath, thumbnailPath);
+
+        }
+
     }
 }

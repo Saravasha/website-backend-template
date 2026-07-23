@@ -1,5 +1,5 @@
 ﻿@using WebAppBackend.Models
-@model IEnumerable<Content>
+@model IEnumerable<ContentViewModel>
 
 @{
     ViewData["Title"] = "Content Index";
@@ -59,3 +59,8 @@
         </table>
     </div>
 </section>
+
+@section Styles {
+    <link href="~/css/page.css" rel="stylesheet" />
+
+}

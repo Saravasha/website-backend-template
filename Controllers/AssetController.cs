@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Markdig;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.StaticFiles;
@@ -16,16 +17,17 @@ namespace WebAppBackend.Controllers
     public class AssetController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly VideoThumbnailProvider _videoThumbnailProvider;
         private readonly AssetTypeProvider _assetTypeProvider;
         private readonly FilePathProvider _filePathProvider;
         private readonly IMemoryCache _cache;
+        private static readonly MarkdownPipeline Pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .Build();
 
-        public AssetController(ApplicationDbContext context, IWebHostEnvironment webHost, VideoThumbnailProvider videoThumbnailProvider, AssetTypeProvider assetTypeProvider, FilePathProvider filePathProvider, IMemoryCache cache)
+        public AssetController(ApplicationDbContext context, VideoThumbnailProvider videoThumbnailProvider, AssetTypeProvider assetTypeProvider, FilePathProvider filePathProvider, IMemoryCache cache)
         {
             _context = context;
-            _webHostEnvironment = webHost;
             _videoThumbnailProvider = videoThumbnailProvider;
             _assetTypeProvider = assetTypeProvider;
             _filePathProvider = filePathProvider;
@@ -53,6 +55,91 @@ namespace WebAppBackend.Controllers
             return (physicalFilePath, webPath);
         }
 
+        private async Task FoldersContentGetter(FilePathProvider filePathProvider, List<string> localFolders)
+        {
+            //CatalogViewModel cvm = new CatalogViewModel();
+            foreach (var folder in localFolders)
+            {
+                //Category catToAdd = new Category();
+                var category = _context.Categories.FirstOrDefault(c => c.Name == folder);
+                foreach (var item in Directory.GetFiles(Path.Combine(filePathProvider.PublishRoot, folder)))
+                {
+                    var fileInDirectory = new FileInfo(item).Name;
+                    var existingAsset = _context.Assets.FirstOrDefault(a =>
+                        a.Name == fileInDirectory &&
+                        a.Categories.Any(c => c.Name == folder));
+                    if (existingAsset == null)
+                    {
+
+                        var fullPath = Path.Combine(filePathProvider.PublishRoot, folder, fileInDirectory);
+                        var webPath = filePathProvider.ToWebPath(fullPath);
+
+                        string? thumbPath = null;
+
+
+                        var assetType = _assetTypeProvider.GetAssetType(Path.GetExtension(fileInDirectory));
+
+                        Models.Asset assetStage = new Models.Asset()
+                        {
+                            Name = fileInDirectory,
+                            Description = folder,
+                            Author = User.Identity.Name,
+                            FileUrl = webPath,
+                            Type = assetType,
+
+                        };
+
+                        var fileInfo = new FileInfo(assetStage.Name);
+
+                        if (fileInfo.Name.EndsWith("_thumb.jpg",
+                            StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+
+                        if (assetType == AssetType.Video)
+                        {
+                            thumbPath = await _videoThumbnailProvider.GeneratePublishAsync(fullPath);
+                            assetStage.ThumbnailUrl = thumbPath;
+                        }
+
+                        if (category != null)
+                        {
+                            assetStage.Categories.Add(category);
+                        }
+                        _context.Assets.Add(assetStage);
+                    }
+                }
+
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        [Authorize(Roles = "Admin")]
+        // GET: CatalogController]
+        public async Task<IActionResult> Seed()
+        {
+            List<string> localFolders = new List<string>();
+            var publishRoot = Directory.GetDirectories(_filePathProvider.PublishRoot, "*");
+            foreach (var categoryFolder in publishRoot)
+            {
+                var dir = new DirectoryInfo(categoryFolder).Name;
+                localFolders.Add(dir);
+            }
+
+            foreach (var file in localFolders)
+            {
+
+                if (!_context.Categories.Any(x => x.Name == file))
+                {
+                    _context.Categories.Update(new Category() { Name = file });
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            await FoldersContentGetter(_filePathProvider, localFolders);
+            return RedirectToAction("Index", "Asset");
+        }
         [AllowAnonymous]
         [HttpGet("/Asset/Stream/{id}")]
         public async Task<IActionResult> Stream(int id)
@@ -62,38 +149,82 @@ namespace WebAppBackend.Controllers
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
                 return await _context.Assets.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
             });
-
             if (asset == null || string.IsNullOrWhiteSpace(asset.FileUrl))
             {
                 return NotFound("Asset or file URL not found.");
             }
-
-            string filePath;
-
-            try
-            {
-                filePath = _filePathProvider.GetFullPath(asset.FileUrl);
-            }
+            string filePath; try { filePath = _filePathProvider.GetFullPath(asset.FileUrl); }
             catch (Exception ex)
-            {
-                // Optional: log exception here
+            { // Optional: log exception here
                 return BadRequest("Invalid file path.");
             }
-            if (!System.IO.File.Exists(filePath))
-                return NotFound();
-
+            if (!System.IO.File.Exists(filePath)) return NotFound();
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(filePath, out string contentType))
             {
                 contentType = "application/octet-stream";
             }
-
             var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             return File(fileStream, contentType, enableRangeProcessing: true);
         }
 
+        [AllowAnonymous]
+        [HttpGet("/Asset/Render/{id:int}")]
+        public async Task<IActionResult> Render(int id)
+        {
+            var asset = await _context.Assets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
 
+            if (asset == null)
+                return NotFound();
 
+            var filePath = _filePathProvider.GetFullPath(asset.FileUrl);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
+
+            var extension = Path.GetExtension(filePath).ToLowerInvariant();
+
+            var content = await System.IO.File.ReadAllTextAsync(filePath);
+
+            return extension switch
+            {
+                ".md" => Content(
+                    Markdig.Markdown.ToHtml(content, Pipeline),
+                    "text/html"),
+
+                ".txt" => Content(
+                    $"<pre>{System.Net.WebUtility.HtmlEncode(content)}</pre>",
+                    "text/html"),
+
+                _ => BadRequest("Unsupported text asset.")
+            };
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/Asset/Download/{id:int}")]
+        public async Task<IActionResult> Download(int id)
+        {
+            var asset = await _context.Assets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (asset == null)
+                return NotFound();
+
+            var filePath = _filePathProvider.GetFullPath(asset.FileUrl);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
+
+            var fileName = Path.GetFileName(filePath);
+
+            return PhysicalFile(
+                filePath,
+                "application/octet-stream",
+                fileName);
+        }
         public async Task<IActionResult> Index(string searchString, DateOnly? fromDate, DateOnly? toDate)
         {
             var assets = await _context.Assets
@@ -136,18 +267,36 @@ namespace WebAppBackend.Controllers
             ViewData["CurrentFilter"] = searchString;
             return View(avm);
         }
-
         // GET: AssetController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            Asset? asset = await _context.Assets
+            var asset = await _context.Assets
                 .AsNoTracking()
-                .Include(c => c.Categories)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(a => a.Categories)
+                .FirstOrDefaultAsync(a => a.Id == id);
 
-            return View(asset);
+            if (asset == null)
+            {
+                return NotFound();
+            }
+
+            var davm = new DetailsAssetViewModel
+            {
+                Asset = asset
+            };
+
+            if (asset.Type == AssetType.Text)
+            {
+                var fullPath = _filePathProvider.GetFullPath(asset.FileUrl);
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    davm.TextContent = await System.IO.File.ReadAllTextAsync(fullPath);
+                }
+            }
+
+            return View(davm);
         }
-
         // GET: AssetController/Create
         public async Task<IActionResult> Create()
         {
@@ -158,7 +307,6 @@ namespace WebAppBackend.Controllers
 
             return View(avm);
         }
-
         [RequestFormLimits(MultipartBodyLengthLimit = 400 * 1024 * 1024)]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateAssetViewModel asset, List<string> Categories)
@@ -180,9 +328,9 @@ namespace WebAppBackend.Controllers
 
             if (ModelState.IsValid)
             {
-                var assetType = asset.FileUp != null ? _assetTypeProvider.GetType(asset.FileUp.ContentType) : AssetType.Other;
+                var assetType = asset.FileUp != null ? _assetTypeProvider.GetAssetType(asset.FileUp.ContentType) : AssetType.Other;
 
-                var AssetToAdd = new Asset()
+                var AssetToAdd = new Models.Asset()
                 {
                     Name = asset.Name,
                     Description = asset.Description,
@@ -216,13 +364,11 @@ namespace WebAppBackend.Controllers
 
             return View(cavm);
         }
-
-
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            EditAssetViewModel cavm = new EditAssetViewModel();
-            Asset? asset = await _context.Assets
+            EditAssetViewModel eavm = new EditAssetViewModel();
+            Models.Asset? asset = await _context.Assets
                 .Include(c => c.Categories)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -233,19 +379,29 @@ namespace WebAppBackend.Controllers
 
             List<int> categoriesIds = asset.Categories.Select(c => c.Id).ToList();
 
-            cavm.Name = asset.Name;
-            cavm.Description = asset.Description;
-            cavm.FileUrl = asset.FileUrl;
-            cavm.Author = asset.Author;
-            cavm.CategoryIds = categoriesIds;
-            cavm.Location = asset.Location;
-            cavm.Date = asset.Date;
-            cavm.Type = asset.Type;  // <--- Set the AssetType here
+            eavm.Name = asset.Name;
+            eavm.Description = asset.Description;
+            eavm.FileUrl = asset.FileUrl;
+            eavm.Author = asset.Author;
+            eavm.CategoryIds = categoriesIds;
+            eavm.Location = asset.Location;
+            eavm.Date = asset.Date;
+            eavm.Type = asset.Type;  // <--- Set the AssetType here
 
             var categories = _context.Categories;
             ViewBag.CategoryList = new MultiSelectList(categories, "Id", "Name");
 
-            return View(cavm);
+            if (asset.Type == AssetType.Text)
+            {
+                var fullPath = _filePathProvider.GetFullPath(asset.FileUrl);
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    eavm.TextContent = await System.IO.File.ReadAllTextAsync(fullPath);
+                }
+            }
+
+            return View(eavm);
         }
 
         [RequestFormLimits(MultipartBodyLengthLimit = 400 * 1024 * 1024)]
@@ -279,7 +435,7 @@ namespace WebAppBackend.Controllers
                     string? webFilePath = uploadResult?.WebPath;
 
                     assetToEdit.FileUrl = webFilePath;
-                    assetToEdit.Type = _assetTypeProvider.GetType(asset.FileUp.ContentType);
+                    assetToEdit.Type = _assetTypeProvider.GetAssetType(asset.FileUp.ContentType);
 
                     string? thumbPath = null;
 
@@ -333,12 +489,28 @@ namespace WebAppBackend.Controllers
                 .AsNoTracking()
                 .Include(c => c.Categories)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+
             if (asset == null)
             {
                 return NotFound();
             }
 
-            return View(asset);
+            var davm = new DeleteAssetViewModel
+            {
+                Asset = asset
+            };
+            if (asset.Type == AssetType.Text)
+            {
+                var fullPath = _filePathProvider.GetFullPath(asset.FileUrl);
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    davm.TextContent = await System.IO.File.ReadAllTextAsync(fullPath);
+                }
+            }
+
+            return View(davm);
         }
 
         // POST: AssetController/Delete/5
@@ -398,7 +570,7 @@ namespace WebAppBackend.Controllers
                     thumbPath = await _videoThumbnailProvider.GenerateAsync(physicalFilePath, uniqueFileName);
                 }
 
-                var asset = new Asset
+                var asset = new Models.Asset
                 {
                     Name = uniqueFileName,
                     Description = model.Description,
@@ -407,7 +579,7 @@ namespace WebAppBackend.Controllers
                     ThumbnailUrl = thumbPath,
                     Location = model.Location,
                     Date = model.Date,
-                    Type = _assetTypeProvider.GetType(file.ContentType)
+                    Type = _assetTypeProvider.GetAssetType(file.ContentType)
                 };
 
                 foreach (var catId in model.Categories)

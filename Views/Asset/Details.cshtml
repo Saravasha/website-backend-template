@@ -1,5 +1,5 @@
 ﻿@using WebAppBackend.Models
-@model Asset
+@model DetailsAssetViewModel
 
 @{
     ViewData["Title"] = "Asset Details";
@@ -11,24 +11,67 @@
         <div class="card-body">
 
             <div class="mb-4 text-center">
-                @switch (Model.Type)
+                @switch (Model.Asset.Type)
                 {
                     case AssetType.Image:
-                        <img src="@($"{Context.Request.PathBase}{Model.FileUrl}")" class="img-fluid rounded border" style="max-height: 400px;" alt="Image Preview" loading="lazy" />
+                        <img src="@Url.Content(Model.Asset.FileUrl)" class="img-fluid rounded border" style="max-height: 400px;" alt="Image Preview" loading="lazy" />
                         break;
 
                     case AssetType.Video:
                         <video controls class="w-100 rounded border" style="max-height: 400px;">
-                            <source src="@($"{Context.Request.PathBase}{Model.FileUrl}")" type="video/mp4" />
+                            <source src="@Url.Content(Model.Asset.FileUrl)" type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
                         break;
 
                     case AssetType.Audio:
                         <audio controls class="w-100 mt-3">
-                            <source src="@($"{Context.Request.PathBase}{Model.FileUrl}")" type="audio/mpeg" />
+                            <source src="@Url.Content(Model.Asset.FileUrl)" type="audio/mpeg" />
                             Your browser does not support the audio element.
                         </audio>
+                        break;
+                    case AssetType.Document:
+                        @if (Model.Asset.FileUrl.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <iframe src="@Url.Content(Model.Asset.FileUrl)"
+                                    class="w-100 border rounded"
+                                    style="height:700px;">
+                            </iframe>
+
+                            <a href="@Url.Content(Model.Asset.FileUrl)"
+                               target="_blank"
+                               class="btn btn-primary">
+                                Open Document
+                            </a>
+
+                            <a href="@Url.Content(Model.Asset.FileUrl)"
+                               download
+                               class="btn btn-secondary">
+                                Download
+                            </a>
+                        }
+                        break;
+
+                    case AssetType.Text:
+                        <div class="w-100 border rounded"
+                             style="height:700px;">
+
+                            <p class="border rounded p-3 bg-light">
+                        @Model.TextContent
+                            </p>
+
+                            <a href="@Url.Content(Model.Asset.FileUrl)"
+                               target="_blank"
+                               class="btn btn-primary">
+                                Open Text File
+                            </a>
+
+                            <a href="@Url.Content(Model.Asset.FileUrl)"
+                               download
+                               class="btn btn-secondary">
+                                Download
+                            </a>
+                        </div>
                         break;
 
                     default:
@@ -40,29 +83,29 @@
             <!-- Asset Details -->
             <dl class="row">
                 <dt class="col-sm-3">Type</dt>
-                <dd class="col-sm-9">@Model.Type</dd>
+                <dd class="col-sm-9">@Model.Asset.Type</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Name)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Name)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Name)</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Description)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Description)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Description)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Description)</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Author)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Author)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Author)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Author)</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Location)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Location)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Location)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Location)</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Date)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Date)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Date)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Date)</dd>
 
                 <dt class="col-sm-3">Categories</dt>
                 <dd class="col-sm-9">
-                    @if (Model.Categories != null && Model.Categories.Any())
+                    @if (Model.Asset.Categories != null && Model.Asset.Categories.Any())
                     {
                         <ul class="list-unstyled mb-0">
-                            @foreach (var cat in Model.Categories)
+                            @foreach (var cat in Model.Asset.Categories)
                             {
                                 <li class="list-inline-item"><span class="badge badge-secondary">@cat.Name</span></li>
                             }
@@ -77,7 +120,7 @@
         </div>
 
         <div class="card-footer d-flex justify-content-between">
-            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi-arrow-clockwise mr-1"></i>Edit Asset</a>
+            <a asp-action="Edit" asp-route-id="@Model?.Asset.Id" class="btn btn-primary"><i class="bi-arrow-clockwise mr-1"></i>Edit Asset</a>
             <a asp-action="Index" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left mr-1"></i>Back to Assets
             </a>

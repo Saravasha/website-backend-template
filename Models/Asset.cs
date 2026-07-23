@@ -9,6 +9,8 @@ namespace WebAppBackend.Models
         Image,
         Video,
         Audio,
+        Document,
+        Text,
         Other
     }
     public class Asset

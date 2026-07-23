@@ -12,8 +12,7 @@ namespace WebAppBackend.Controllers
     {
 
         private readonly ApplicationDbContext _context;
-        static readonly CategoryViewModel cvm = new();
-        static readonly CreateCategoryViewModel ccvm = new();
+
         public CategoryController(ApplicationDbContext context)
         {
             _context = context;
@@ -21,37 +20,52 @@ namespace WebAppBackend.Controllers
 
         public IActionResult Index()
         {
+            var cvm = new CategoryViewModel();
             cvm.Categories = _context.Categories.ToList();
             return View(cvm);
         }
         // GET: CategoryController/Create
         public IActionResult Create()
         {
+            var ccvm = new CreateCategoryViewModel();
             return View(ccvm);
         }
 
         // POST: CategoryController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateCategoryViewModel cat)
+        public async Task<IActionResult> Create(CreateCategoryViewModel cat)
         {
-
-            //ModelState.Remove("Id");
             if (ModelState.IsValid)
             {
+                if (_context.Categories.Any(c => c.Name == cat.Name))
+                {
+                    ModelState.AddModelError(nameof(cat.Name), "A category with this name already exists.");
+                    return View(cat);
+                }
+
                 Category catToAdd = new Category()
                 {
                     Name = cat.Name
                 };
 
                 _context.Categories.Add(catToAdd);
-                _context.SaveChanges();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError(nameof(cat.Name),
+                        "A category with this name already exists.");
+                    return View(cat);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                return View(ccvm);
+                return View(cat);
             }
 
         }
@@ -66,25 +80,45 @@ namespace WebAppBackend.Controllers
             return View(cvm);
         }
 
-        // POST: CategoryController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CategoryViewModel cat)
         {
-            var categoryToEdit = _context.Categories.Find(id);
+            var categoryToEdit = await _context.Categories.FindAsync(id);
 
-            if (ModelState.IsValid)
+            if (categoryToEdit == null)
             {
-                categoryToEdit.Name = cat.Name;
-
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            else
+
+            if (_context.Categories.Any(c => c.Name == cat.Name && c.Id != id))
+            {
+                ModelState.AddModelError(nameof(cat.Name),
+                    "A category with this name already exists.");
+
+                return View(cat);
+            }
+
+            if (!ModelState.IsValid)
             {
                 return View(cat);
             }
+
+            categoryToEdit.Name = cat.Name;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError(nameof(cat.Name),
+                    "A category with this name already exists.");
+
+                return View(cat);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Db/Delete/5
