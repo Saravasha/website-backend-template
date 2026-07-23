@@ -23,9 +23,14 @@ namespace WebAppBackend.Controllers
                 .GetSection("AllowedOrigins")
                 .Get<string[]>();
 
-            var url = _environment.IsDevelopment()
+            var basePath = _configuration["BasePath"] ?? "";
+
+            var origin = _environment.IsDevelopment()
                 ? origins?.FirstOrDefault(x => x.StartsWith("http://"))
                 : origins?.FirstOrDefault();
+
+            var url = $"{origin?.TrimEnd('/')}{basePath.TrimEnd('/')}";
+
             return View(new Preview
             {
                 Url = url
