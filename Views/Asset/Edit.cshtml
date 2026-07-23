@@ -29,20 +29,67 @@
             @switch (Model.Type)
             {
                 case AssetType.Image:
-                    <img id="PreviewFile" src="@($"{Context.Request.PathBase}{Model.FileUrl}")" class="img-fluid rounded border" style="max-height: 200px;" loading="lazy" />
+                    <img id="PreviewFile" src="@Url.Content(Model.FileUrl)" class="img-fluid rounded border" style="max-height: 200px;" loading="lazy" />
                     break;
                 case AssetType.Video:
                     <video id="PreviewFile" controls class="w-100 rounded border" style="max-height: 300px;">
-                        <source src="@($"{Context.Request.PathBase}{Model.FileUrl}")" type="video/mp4" />
+                        <source src="@Url.Content(Model.FileUrl)" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                     break;
                 case AssetType.Audio:
                     <audio id="PreviewFile" controls class="w-100">
-                        <source src="@($"{Context.Request.PathBase}{Model.FileUrl}")" type="audio/mpeg" />
+                        <source src="@Url.Content(Model.FileUrl)" type="audio/mpeg" />
                         Your browser does not support the audio element.
                     </audio>
                     break;
+                case AssetType.Document:
+                    @if (Model.FileUrl.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <iframe src="@Url.Content(Model.FileUrl)"
+                                class="w-100 border rounded"
+                                style="height:700px;">
+                        </iframe>
+
+                        <a href="@Url.Content(Model.FileUrl)"
+                           target="_blank"
+                           class="btn btn-primary">
+                            Open Document
+                        </a>
+
+                        <a href="@Url.Content(Model.FileUrl)"
+                           download
+                           class="btn btn-secondary">
+                            Download
+                        </a>
+                    }
+                    break;
+
+                case AssetType.Text:
+                    {
+                        <div class="w-100 border rounded p-3 bg-light"
+                             style="height:700px; overflow:auto;">
+
+                            <pre class="text-content text-start mb-0">@Model.TextContent</pre>
+
+                        </div>
+
+                        <div class="mt-3">
+                            <a href="@Url.Content(Model.FileUrl)"
+                               target="_blank"
+                               class="btn btn-primary">
+                                Open Text File
+                            </a>
+
+                            <a href="@Url.Content(Model.FileUrl)"
+                               download
+                               class="btn btn-secondary">
+                                Download
+                            </a>
+                        </div>
+
+                        break;
+                    }
                 default:
                     <p class="text-muted"><em>No preview available for this file type.</em></p>
                     break;
@@ -93,9 +140,9 @@
 
         <!-- File Upload -->
         <div class="form-group mb-4">
-                <label asp-for="FileUp" class="custom-label d-block"></label>
+            <label asp-for="FileUp" class="custom-label d-block"></label>
             <div class="custom-file">
-            <input asp-for="FileUp" type="file" class="custom-file-input" id="FLFrontFile" onchange="handleFilePreview(this)" />
+                <input asp-for="FileUp" type="file" class="custom-file-input" id="FLFrontFile" onchange="handleFilePreview(this)" />
                 <label class="custom-file-label" for="FLFrontFile">Change Asset File:</label>
             </div>
             <span asp-validation-for="FileUp" class="text-danger"></span>
@@ -164,6 +211,44 @@
                     </audio>`;
                 detectedTypeInput.value = "Audio";
                 hiddenDetectedInput.value = "Audio";
+            } else if (fileType === "application/pdf" || fileType === "application/msword" || fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                previewHTML = `
+                    <div class="asset-card document-card">
+                        <div>
+                            📄 ${file.name}
+                        </div>
+                        <div class="mt-2">
+                            <a href="${objectURL}" target="_blank" class="btn btn-primary">
+                                Open Document
+                            </a>
+                            <a href="${objectURL}" download="${file.name}" class="btn btn-secondary">
+                                Download
+                            </a>
+                        </div>
+                    </div>`;
+
+                detectedTypeInput.value = "Document";
+                hiddenDetectedInput.value = "Document";
+
+            } else if (fileType === "text/plain" || fileType === "text/markdown") {
+                previewHTML = `
+                <div class="asset-card text-card">
+                        <div>
+                            📝 ${file.name}
+                        </div>
+                        <div class="mt-2">
+                            <a href="${objectURL}" target="_blank" class="btn btn-primary">
+                                Open Text File
+                            </a>
+                            <a href="${objectURL}" download="${file.name}" class="btn btn-secondary">
+                                Download
+                            </a>
+                        </div>
+                    </div>`;
+
+                detectedTypeInput.value = "Text";
+                hiddenDetectedInput.value = "Text";
+
             } else {
                 previewHtml = `<p class="text-muted"><em>No preview available for this file type.</em></p>`;
                 detectedTypeInput.value = "Other";
@@ -191,6 +276,14 @@
                 case "audio":
                     detectedTypeInput.value = "Audio";
                     hiddenDetectedInput.value = "Audio";
+                    break;
+                case "document":
+                    detectedTypeInput.value = "Document";
+                    hiddenDetectedInput.value = "Document";
+                    break;
+                case "text":
+                    detectedTypeInput.value = "Text";
+                    hiddenDetectedInput.value = "Text";
                     break;
                 default:
                     detectedTypeInput.value = "Other";

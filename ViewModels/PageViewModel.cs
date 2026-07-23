@@ -6,6 +6,7 @@ namespace WebAppBackend.ViewModels
     public class PageViewModel
     {
 
+        public int Id { get; set; }
         [Display(Name = "Page Title")]
         public string? Title { get; set; }
         [Display(Name = "Page Container Body")]

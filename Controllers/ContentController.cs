@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using NuGet.ContentModel;
 using WebAppBackend.Data;
 using WebAppBackend.Models;
+using WebAppBackend.Services;
 using WebAppBackend.ViewModels;
 
 
@@ -15,19 +14,36 @@ namespace WebAppBackend.Controllers
     public class ContentController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHtmlSanitizerService _htmlSanitizer;
 
-        public ContentController(ApplicationDbContext context)
+        public ContentController(ApplicationDbContext context, IHtmlSanitizerService htmlSanitizer)
         {
             _context = context;
+            _htmlSanitizer = htmlSanitizer;
+
         }
 
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var model = new List<ContentViewModel>();
 
-            var contentList = _context.Contents.Include(c => c.Page).ToList();
+            var contents = await _context.Contents
+                .Include(c => c.Page)
+                .ToListAsync();
 
-            return View(contentList);
+            foreach (var content in contents)
+            {
+                model.Add(new ContentViewModel
+                {
+                    Id = content.Id,
+                    Title = content.Title,
+                    Container = content.Container,
+                    Date = content.Date,
+                    Page = content.Page
+                });
+            }
+
+            return View(model);
         }
 
         // GET: PageController/Details/5
@@ -66,11 +82,14 @@ namespace WebAppBackend.Controllers
                 return View(content);
             }
 
+            //Sanitize the Container content before saving to the database
+            var sanitizedContainer = _htmlSanitizer.Sanitize(content.Container);
+
             var contentToAdd = new Content
             {
                 Title = content.Title,
                 Date = content.Date,
-                Container = content.Container,
+                Container = sanitizedContainer,
                 PageId = content.PageId
             };
 
@@ -124,10 +143,12 @@ namespace WebAppBackend.Controllers
             {
                 return NotFound();
             }
+            //Sanitize the Container content before saving to the database
+            var sanitizedContainer = _htmlSanitizer.Sanitize(content.Container);
 
             contentToEdit.Title = content.Title;
             contentToEdit.Date = content.Date;
-            contentToEdit.Container = content.Container;
+            contentToEdit.Container = sanitizedContainer;
             contentToEdit.PageId = content.PageId;
 
             _context.Contents.Update(contentToEdit);

@@ -38,7 +38,9 @@ namespace WebAppBackend.Data
                 new Page { Id = 1, Title = "Home", Container = @"<p>Home</p>" },
                 new Page { Id = 2, Title = "Production", Container = @"<p>Production</p>" },
                 new Page { Id = 3, Title = "About", Container = @"<p>About</p>" },
+                // MULTI-COMMITTER:PROTECTED:START AppDbEmail
                 new Page { Id = 4, Title = "Contact", Container = @"<p>Email: <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>" },
+                // MULTI-COMMITTER:PROTECTED:END AppDbEmail
                 new Page
                 {
                     Id = 5,
@@ -53,6 +55,7 @@ namespace WebAppBackend.Data
                 new Content { Id = 3, Title = "Biography", Container = @"<p>Early Life</p>", PageId = 3 },
                 new Content { Id = 4, Title = "Social Media", Container = @"<p>Faceberrk</p>", PageId = 4 },
                 new Content { Id = 5, Title = "Cookie Policy", Container = @"<p>We don't use cookies</p>", PageId = 5 },
+                // MULTI-COMMITTER:PROTECTED:START PrivacyPolicy
                 new Content { Id = 6, Title = "Privacy Policy", Container = @"
             <p>At __DOMAIN_NAME__, we respect your privacy and are committed to protecting your personal data.</p>
             <h3>Cookies</h3>
@@ -64,40 +67,21 @@ namespace WebAppBackend.Data
             <h3>Your Rights</h3>
             <p>Since we do not collect personal data from visitors, there are no user data requests applicable. If you have questions or concerns about privacy, please contact us at <a href='mailto:info@__DOMAIN_NAME__'>info@__DOMAIN_NAME__</a></p>", PageId = 5, Date = new DateOnly(2025, 6, 3) }
             );
-
-            modelbuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Film" },
-                new Category { Id = 2, Name = "Liljevalchs 2001" },
-                new Category { Id = 3, Name = "Stop-motion" },
-                new Category { Id = 4, Name = "Press" },
-                new Category { Id = 5, Name = "Foto" },
-                new Category { Id = 6, Name = "Kontroversiell Konst" },
-                new Category { Id = 7, Name = "Abstrakt Konst" },
-                new Category { Id = 8, Name = "Akvarell Konst" }
-            );
-
-            modelbuilder.Entity<Asset>().HasData(
-                new Asset { Id = 1, Name = "Dans under Vita Lakan", Author = "Fateme Gosheh", Description = "Inte sett än", FileUrl = "/Assets/Filmproduktion/image (287).jpg", CategoryId = 8, Type = 0 },
-                new Asset { Id = 2, Name = "Aisha's Art", Author = "Fateme Gosheh", Description = "Gods butt from above", FileUrl = "/Assets/Kontroversiell Konst/image (3).jpg", CategoryId = 6, Type = 0 },
-                new Asset { Id = 3, Name = "Kari - Jag är elak", Author = "Fateme Gosheh", Description = "Helt fantastiskt", FileUrl = "/Assets/Filmproduktion/image (304).jpg", CategoryId = 8, Type = 0 }
-            );
-
+                // MULTI-COMMITTER:PROTECTED:END PrivacyPolicy
 
             modelbuilder.Entity<Page>()
                 .HasMany(c => c.Contents)
                 .WithOne(p => p.Page)
                 .HasForeignKey(p => p.PageId)
                 .OnDelete(DeleteBehavior.SetNull);
-            ;
+
+            modelbuilder.Entity<Category>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
 
             modelbuilder.Entity<Asset>()
                .HasMany(p => p.Categories)
-               .WithMany(c => c.Assets)
-               .UsingEntity(j => j.HasData(
-                   new { CategoriesId = 8, AssetsId = 1 },
-                   new { CategoriesId = 6, AssetsId = 2 },
-                   new { CategoriesId = 8, AssetsId = 3 }
-           ));
+               .WithMany(c => c.Assets);           
 
             modelbuilder.Entity<Asset>()
                 .Property(e => e.Date)
