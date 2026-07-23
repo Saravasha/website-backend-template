@@ -97,6 +97,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.Cookie.Name = $"{builder.Environment.ApplicationName}.Identity";
+    options.Cookie.Path = builder.Configuration["BasePath"] ?? "/";
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
