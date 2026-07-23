@@ -8,6 +8,7 @@ on:
 
 jobs:
   deploy:
+    if: github.event.repository.name != 'website-template-backend'
     name: Build and Deploy Backend to Staging
     runs-on: [self-hosted, Staging]
 
