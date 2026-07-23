@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -110,6 +111,18 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(10);
 });
 
+// Forwarded Headers
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
+
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+
 var app = builder.Build();
 Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
 
@@ -123,6 +136,16 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
     app.UseHttpsRedirection();
+}
+
+
+// Use BasePath for Platform Apps
+app.UseForwardedHeaders();
+
+if (!string.IsNullOrEmpty(builder.Configuration["BasePath"]))
+{
+    Console.WriteLine($"Applying BasePath: {builder.Configuration["BasePath"]}");
+    app.UsePathBase(builder.Configuration["BasePath"]);
 }
 
 // Apply EF Core migrations and seed data
@@ -221,7 +244,6 @@ using (var scope = app.Services.CreateScope())
     DirectoryAsserter(filePathProvider.PublishRoot, "/Publish");
     AddStaticFilesRecursively(filePathProvider.WebAssetsRoot, app);
 }
-
 
 app.UseAuthentication();
 app.UseAuthorization();
