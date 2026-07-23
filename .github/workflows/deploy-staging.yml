@@ -8,7 +8,6 @@ on:
 
 jobs:
   deploy:
-    if: github.event.repository.name != 'website-template-backend'
     name: Build and Deploy Backend to Production
     runs-on: [self-hosted, Production]
 
