@@ -1,5 +1,5 @@
 ﻿@using WebAppBackend.Models
-@model IEnumerable<Page>
+@model IEnumerable<PageViewModel>
 
 @{
     ViewData["Title"] = "Pages Index";
@@ -35,7 +35,7 @@
                                 foreach (var content in item.Contents)
                                 {
                                     <span class="badge badge-secondary">@content.Title</span>
-                        
+
                                     <br />
                                 }
                             }
@@ -63,3 +63,9 @@
         </table>
     </div>
 </section>
+
+
+
+@section Styles {
+    <link href="~/css/page.css" rel="stylesheet" />
+}

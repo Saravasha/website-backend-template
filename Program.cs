@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +11,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     Args = args,
     ContentRootPath = AppContext.BaseDirectory
-
-    // prevents missing scaffolded css files
 });
-
 
 // Load environment variables
 builder.Configuration.AddEnvironmentVariables();
@@ -76,6 +72,7 @@ builder.Services.AddScoped<VideoThumbnailProvider>();
 builder.Services.AddScoped<AssetTypeProvider>();
 builder.Services.AddHostedService<OrphanAnnihilatorBackgroundService>();
 builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+builder.Services.AddScoped<IHtmlSanitizerService, HtmlSanitizerService>();
 
 // CORS setup
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
@@ -111,16 +108,6 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.MaxRequestBodySize = 400 * 1024 * 1024; // 400 MB
     options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(10);
-});
-
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor |
-        ForwardedHeaders.XForwardedProto;
-
-    options.KnownNetworks.Clear();
-    options.KnownProxies.Clear();
 });
 
 var app = builder.Build();
@@ -199,14 +186,8 @@ if (smtpSettings == null ||
     throw new InvalidOperationException("Missing required SMTP configuration values.");
 }
 
-// Use BasePath for Platform Apps
-app.UseForwardedHeaders();
-
-if (!string.IsNullOrEmpty(builder.Configuration["BasePath"]))
-{
-    Console.WriteLine($"Applying BasePath: {builder.Configuration["BasePath"]}");
-    app.UsePathBase(builder.Configuration["BasePath"]);
-}
+app.UseRouting();
+app.UseCors("corsPolicy");
 
 // Serve static files
 app.UseStaticFiles();
@@ -237,11 +218,11 @@ using (var scope = app.Services.CreateScope())
 {
     var filePathProvider = scope.ServiceProvider.GetRequiredService<FilePathProvider>();
     DirectoryAsserter(filePathProvider.UploadsRoot, "/Uploads");
+    DirectoryAsserter(filePathProvider.PublishRoot, "/Publish");
     AddStaticFilesRecursively(filePathProvider.WebAssetsRoot, app);
 }
 
-app.UseRouting();
-app.UseCors("corsPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

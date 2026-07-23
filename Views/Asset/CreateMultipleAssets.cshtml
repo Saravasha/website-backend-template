@@ -119,6 +119,37 @@
                         source.src = objectURL;
                         source.type = fileType;
                         previewElement.appendChild(source);
+                    } else if (fileType === "application/pdf") {
+                        previewElement = document.createElement('iframe');
+                        previewElement.src = objectURL;
+                        previewElement.style.width = '150px';
+                        previewElement.style.height = '200px';
+                        previewElement.classList.add('border', 'rounded', 'm-1');
+                    } else if (
+                            fileType === "application/msword" ||
+                            fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        ) {
+                            previewElement = document.createElement('div');
+                            previewElement.classList.add('border', 'rounded', 'p-2', 'm-1');
+                            previewElement.innerHTML = `
+                                <div>📄 ${file.name}</div>
+                                <small>Word Document</small>
+                            `;
+
+                    } else if (fileType === "text/plain" || fileType === "text/markdown") {
+                        previewElement = document.createElement('pre');
+                        previewElement.classList.add('border', 'rounded', 'p-2', 'm-1');
+                        previewElement.style.maxHeight = '200px';
+                        previewElement.style.width = '200px';
+                        previewElement.style.overflow = 'auto';
+
+                        const reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            previewElement.textContent = e.target.result;
+                        };
+
+                        reader.readAsText(file);
                     } else {
                         previewElement = document.createElement('div');
                         previewElement.textContent = file.name;

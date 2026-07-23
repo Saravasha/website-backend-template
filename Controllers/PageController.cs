@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NuGet.ContentModel;
-using WebAppBackend.Models;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using WebAppBackend.Data;
+using WebAppBackend.Models;
+using WebAppBackend.Services;
 using WebAppBackend.ViewModels;
 
 
@@ -15,21 +15,37 @@ namespace WebAppBackend.Controllers
     public class PageController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHtmlSanitizerService _htmlSanitizer;
 
-        public PageController(ApplicationDbContext context)
+        public PageController(ApplicationDbContext context, IHtmlSanitizerService htmlSanitizer)
         {
             _context = context;
+            _htmlSanitizer = htmlSanitizer;
         }
 
 
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var model = new List<PageViewModel>();
 
-            var pageList = _context.Pages.Include(c => c.Contents).ToList();
+            var pages = await _context.Pages
+                .Include(p => p.Contents)
+                .ToListAsync();
 
-            return View(pageList);
+            foreach (var page in pages)
+            {
+                model.Add(new PageViewModel
+                {
+                    Id = page.Id,
+                    Title = page.Title,
+                    Container = page.Container,
+                    Contents = page.Contents.ToList(),
+                });
+            }
+
+            return View(model);
         }
+
 
         // GET: PageController/Details/5
         public IActionResult Details(int id)
@@ -59,10 +75,14 @@ namespace WebAppBackend.Controllers
 
             if (ModelState.IsValid)
             {
+
+                //Sanitize the Container content before saving to the database
+                var sanitizedContainer = _htmlSanitizer.Sanitize(page.Container);
+
                 var pageToAdd = new Page
                 {
                     Title = page.Title,
-                    Container = page.Container,
+                    Container = sanitizedContainer,
                     Contents = new List<Content>()
                 };
 
@@ -74,7 +94,10 @@ namespace WebAppBackend.Controllers
 
                     pageToAdd.Contents.AddRange(selectedContents);
                 }
-                _context.Pages.Add(pageToAdd);
+
+
+                _context.Pages.Add(pageToAdd);;
+
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
@@ -90,8 +113,6 @@ namespace WebAppBackend.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-
-            
 
             // Try to get the page with its related contents
             var page = _context.Pages
@@ -132,6 +153,9 @@ namespace WebAppBackend.Controllers
                 return View(page);
             }
 
+            //Sanitize the Container content before saving to the database
+            var sanitizedContainer = _htmlSanitizer.Sanitize(page.Container);
+
             var pageToEdit = await _context.Pages.Include(p => p.Contents).FirstOrDefaultAsync(p => p.Id == id);
 
             if (pageToEdit == null)
@@ -140,7 +164,7 @@ namespace WebAppBackend.Controllers
             }
 
             pageToEdit.Title = page.Title;
-            pageToEdit.Container = page.Container;
+            pageToEdit.Container = sanitizedContainer;
 
             // Clear old contents
             pageToEdit.Contents.Clear();
@@ -161,7 +185,6 @@ namespace WebAppBackend.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
 
         public async Task<IActionResult> Delete(int? id)
         {

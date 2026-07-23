@@ -37,4 +37,6 @@ public class EditAssetViewModel
     [Display(Name = "Category:")]
     public List<Category> Categories { get; set; } = new();
     public string? ThumbnailUrl { get; set; }
+
+    public string? TextContent { get; set; }
 }

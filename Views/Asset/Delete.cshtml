@@ -1,5 +1,5 @@
 ﻿@using WebAppBackend.Models
-@model Asset
+@model DeleteAssetViewModel
 
 @{
     ViewData["Title"] = "Delete Asset";
@@ -12,28 +12,71 @@
         </div>
         <div class="p-4">
             <h3 class="mb-4 card-header-pills border-danger border-bottom border-1">
-                Are you sure you want to delete <strong>@Model.Name</strong>?
+                Are you sure you want to delete <strong>@Model.Asset.Name</strong>?
             </h3>
 
             <div class="mb-4 text-center">
-                @switch (Model.Type)
+                @switch (Model.Asset.Type)
                 {
                     case AssetType.Image:
-                        <img src="@($"{Context.Request.PathBase}{Model.FileUrl}")" class="img-fluid rounded border" style="max-height: 400px;" alt="Preview of @Model.Name" loading="lazy" />
+                        <img src="@Url.Content(Model.Asset.FileUrl)" class="img-fluid rounded border" style="max-height: 400px;" alt="Preview of @Model.Asset.Name" loading="lazy" />
                         break;
 
                     case AssetType.Video:
-                        <video controls class="w-100 rounded border" style="max-height: 400px;" aria-label="Video preview of @Model.Name">
-                            <source src="@($"{Context.Request.PathBase}{Model.FileUrl}")" type="video/mp4" />
+                        <video controls class="w-100 rounded border" style="max-height: 400px;" aria-label="Video preview of @Model.Asset.Name">
+                            <source src="@Url.Content(Model.Asset.FileUrl)" type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
                         break;
 
                     case AssetType.Audio:
-                        <audio controls class="w-100 mt-3" aria-label="Audio preview of @Model.Name">
-                            <source src="@($"{Context.Request.PathBase}{Model.FileUrl}")" type="audio/mpeg" />
+                        <audio controls class="w-100 mt-3" aria-label="Audio preview of @Model.Asset.Name">
+                            <source src="@Url.Content(Model.Asset.FileUrl)" type="audio/mpeg" />
                             Your browser does not support the audio element.
                         </audio>
+                        break;
+                    case AssetType.Document:
+                        @if (Model.Asset.FileUrl.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <iframe src="@Url.Content(Model.Asset.FileUrl)"
+                                    class="w-100 border rounded"
+                                    style="height:700px;">
+                            </iframe>
+
+                            <a href="@Url.Content(Model.Asset.FileUrl)"
+                               target="_blank"
+                               class="btn btn-primary">
+                                Open Document
+                            </a>
+
+                            <a href="@Url.Content(Model.Asset.FileUrl)"
+                               download
+                               class="btn btn-secondary">
+                                Download
+                            </a>
+                        }
+                        break;
+
+                    case AssetType.Text:
+                        <div class="w-100 border rounded"
+                             style="height:700px;">
+
+                            <p class="border rounded p-3 bg-light">
+                                @Model.TextContent
+                            </p>
+
+                            <a href="@Url.Content(Model.Asset.FileUrl)"
+                               target="_blank"
+                               class="btn btn-primary">
+                                Open Text File
+                            </a>
+
+                            <a href="@Url.Content(Model.Asset.FileUrl)"
+                               download
+                               class="btn btn-secondary">
+                                Download
+                            </a>
+                        </div>
                         break;
 
                     default:
@@ -43,27 +86,27 @@
             </div>
 
             <dl class="row">
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Name)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Name)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Name)</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Description)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Description)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Description)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Description)</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Author)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Author)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Author)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Author)</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Location)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Location)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Location)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Location)</dd>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Date)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.Date)</dd>
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Asset.Date)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Asset.Date)</dd>
 
                 <dt class="col-sm-3">Categories</dt>
                 <dd class="col-sm-9">
-                    @if (Model.Categories != null && Model.Categories.Any())
+                    @if (Model.Asset.Categories != null && Model.Asset.Categories.Any())
                     {
                         <ul class="list-unstyled mb-0">
-                            @foreach (var cat in Model.Categories)
+                            @foreach (var cat in Model.Asset.Categories)
                             {
                                 <li class="list-inline-item">
                                     <span class="badge badge-secondary">@cat.Name</span>
@@ -81,7 +124,7 @@
 
         <div class="card-footer d-flex justify-content-between">
             <form asp-controller="Asset" asp-action="Delete" method="post" class="mb-0">
-                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Asset.Id" />
                 <button type="submit" class="btn btn-danger">
                     <i class="bi bi-trash mr-1"></i>Delete
                 </button>

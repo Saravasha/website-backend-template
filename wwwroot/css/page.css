@@ -1,0 +1,196 @@
+﻿/* =========================
+   Base Asset Components
+   ========================= */
+
+.asset-card {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: .75rem;
+    background: rgba(255,255,255,.75);
+    box-shadow: 0 .25rem .75rem rgba(0,0,0,.08);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+    .asset-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1.25rem rgba(0,0,0,.15);
+    }
+
+
+/* Legacy/simple asset container */
+
+.asset-file {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: .5rem;
+}
+
+
+/* =========================
+   Asset Metadata
+   ========================= */
+
+.asset-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+.asset-info {
+    flex: 1;
+    min-width: 0;
+}
+
+
+.asset-name,
+.asset-title {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.asset-type {
+    font-size: .8rem;
+    color: #6c757d;
+}
+
+
+.asset-body {
+    flex: 1;
+}
+
+
+.asset-actions {
+    margin-top: .5rem;
+}
+
+
+/* =========================
+   Icons
+   ========================= */
+
+.asset-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: #343a40;
+    color: white;
+    font-size: 1.5rem;
+}
+
+
+/* =========================
+   Thumbnail / Video Preview
+   ========================= */
+
+.asset-thumbnail {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+    .asset-thumbnail img {
+        display: block;
+        width: 100%;
+    }
+
+
+    .asset-thumbnail .bi-play-circle-fill {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        color: white;
+        z-index: 2;
+        text-shadow: 0 2px 8px rgba(0,0,0,.8);
+        pointer-events: none;
+    }
+
+
+/* =========================
+   Audio Asset
+   ========================= */
+
+.audio-card {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+
+.audio-player {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+    .audio-player audio {
+        width: 100%;
+        max-width: 100%;
+        display: block;
+    }
+
+
+/* =========================
+   Document Asset
+   ========================= */
+
+
+.document-thumbnail {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+}
+
+    .document-thumbnail iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+    }
+
+.asset-render li::marker {
+    content: none !important;
+    display: none !important;
+}
+
+.asset-render ul,
+.asset-render ol {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+
+.asset-render h1,
+.asset-render h2,
+.asset-render h3 {
+    margin-top: 1.5rem !important;
+    margin-bottom: .75rem !important;
+    
+}
+
+.asset-render p {
+    margin-bottom: 1rem !important;
+}
+
+.asset-render pre {
+    padding: 1rem !important;
+    border-radius: .5rem !important;
+    overflow-x: auto !important;
+}
+
+.asset-render code {
+    font-family: monospace !important;
+}
