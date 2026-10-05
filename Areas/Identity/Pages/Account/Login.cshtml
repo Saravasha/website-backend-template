@@ -1,16 +1,18 @@
 ﻿@page
 @model LoginModel
-@{
-    ViewData["Title"] = "Log in";
-    Layout = "~/Views/Shared/_AccountLayout.cshtml";
-}
-
 @using Microsoft.AspNetCore.Hosting
 @using WebAppBackend.Areas.Identity.Pages.Account
 @inject IWebHostEnvironment env
+@using WebAppBackend.Services
+@inject ISettingsProvider SettingsProvider
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    var appSettings = await SettingsProvider.GetAsync();
+}
 
+<div class="account-container d-flex align-items-center justify-content-center min-vh-100" style="@(appSettings.Branding.LoginImageAsset != null ? $"background-image: url('{appSettings.Branding.LoginImageAsset.FileUrl}');" : "")">
 
-<div class="account-container d-flex align-items-center justify-content-center min-vh-100">
     <div class="account-box container">
         <div class="row justify-content-center">
             <div class="col-12">
@@ -27,7 +29,7 @@
                     </div>
                 }
 
-                <h1 class="text-center">__PROJECT_NAME__</h1>
+                <h1 class="text-center">@appSettings.Branding.AppName</h1>
 
                 <div class="card shadow">
                     <div class="card-body">

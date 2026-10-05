@@ -31,26 +31,20 @@ public class OrphanAnnihilator
             .Select(a => Path.GetFileName(a.ThumbnailUrl))
             .ToListAsync();
 
-        var pageContainers = await _context.Pages
-            .Where(p => !string.IsNullOrWhiteSpace(p.Container))
-            .Select(p => p.Container!)
+        var pageBodies = await _context.Pages
+            .Where(p => !string.IsNullOrWhiteSpace(p.Body))
+            .Select(p => p.Body!)
             .ToListAsync();
 
-        var contentContainers = await _context.Contents
-            .Where(c => !string.IsNullOrWhiteSpace(c.Container))
-            .Select(c => c.Container!)
-            .ToListAsync();
-
-        var containerFiles = pageContainers
-            .Concat(contentContainers)
+        var bodyFiles = pageBodies
             .SelectMany(ExtractFileNamesFromHtml)
             .ToList();
 
         var referencedFileNames = assetFiles
-            .Concat(assetThumbnails)
-            .Concat(containerFiles)
-            .Where(fn => !string.IsNullOrWhiteSpace(fn))
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+           .Concat(assetThumbnails)
+           .Concat(bodyFiles)
+           .Where(fn => !string.IsNullOrWhiteSpace(fn))
+           .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         // 2. Clean all under UploadsRoot (recursively)
         var files = Directory.GetFiles(_filePathProvider.UploadsRoot, "*.*", SearchOption.AllDirectories);
@@ -109,7 +103,7 @@ public class OrphanAnnihilator
     }
 
     //Implementation 
-    
+
 
     //var fileCleaner = new OrphanAnnihilator(_context, _filePathProvider);
     //await fileCleaner.RemoveUnusedFilesAsync();

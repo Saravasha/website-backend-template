@@ -10,6 +10,8 @@ using WebAppBackend.Data;
 using WebAppBackend.Models;
 using WebAppBackend.Services;
 using WebAppBackend.ViewModels;
+using WebAppBackend.ViewModels.Assets;
+
 
 namespace WebAppBackend.Controllers
 {
@@ -154,7 +156,7 @@ namespace WebAppBackend.Controllers
             
             await _context.SaveChangesAsync();
 
-            await FoldersContentGetter(_filePathProvider, localFolders);           
+            await FoldersContentGetter(_filePathProvider, localFolders);
             
             return RedirectToAction("Index", "Asset");
         }

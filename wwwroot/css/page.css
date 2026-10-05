@@ -194,3 +194,82 @@
 .asset-render code {
     font-family: monospace !important;
 }
+
+
+/*
+===========
+= Pages 
+===========
+*/
+
+.page-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.page-item {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background: #fff;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.page-date {
+    align-self: flex-start;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #6c757d;
+}
+.page-actions {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.page-body {
+    margin-top: 1rem;
+}
+
+.page-children {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+    margin-left: 2rem;
+    padding-left: 1rem;
+    border-left: 3px solid #dee2e6;
+}
+
+
+
+
+/* =========================
+   Orphan Table custom style
+   ========================= */
+
+
+.orphaned-pages th:first-child,
+.orphaned-pages td:first-child {
+    width: auto;
+}
+
+.orphaned-pages .table-fit {
+    width: 15%;
+    white-space: nowrap;
+}
+

@@ -11,8 +11,10 @@ namespace WebAppBackend.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+
+
     public class ReactController : ControllerBase
-    {
+    {        
         private readonly ApplicationDbContext _context;
         private readonly ISettingsProvider _settings;
         public ReactController(ApplicationDbContext context, ISettingsProvider settings)
@@ -20,6 +22,33 @@ namespace WebAppBackend.Controllers
             _context = context;
             _settings = settings;
         }
+
+        private Page BuildPageTree(Page page, List<Page> pages)
+        {
+            var children = pages
+                .Where(p =>
+                    p.ParentId == page.Id &&
+                    !p.IsOrphan &&
+                    p.Visible)
+                .OrderBy(p => p.SortOrder)
+                .Select(child => BuildPageTree(child, pages))
+                .ToList();
+
+            return new Page
+            {
+                Id = page.Id,
+                Title = page.Title,
+                Body = page.Body,
+                ParentId = page.ParentId,
+                SortOrder = page.SortOrder,
+                Visible = page.Visible,
+                IsOrphan = page.IsOrphan,
+                Date = page.Date,
+
+                Children = children
+            };
+        }
+
 
         [HttpGet("assets")]
         public async Task<ActionResult<List<Asset>>> GetAssets()
@@ -46,40 +75,21 @@ namespace WebAppBackend.Controllers
         public async Task<ActionResult<List<Page>>> GetPages()
         {
             var pages = await _context.Pages
-                .OrderBy(p => p.Order)
-                .Select(p => new Page
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    Container = p.Container,
-
-                    Chapters = p.Chapters
-                        .OrderBy(c => c.Order)
-                        .Select(c => new Chapter
-                        {
-                            Id = c.Id,
-                            Title = c.Title,
-                            Container = c.Container,
-                            Date = c.Date,
-                            Order = c.Order,
-
-                            Contents = c.Contents
-                                .OrderBy(content => content.Order)
-                                .Select(content => new Content
-                                {
-                                    Id = content.Id,
-                                    Title = content.Title,
-                                    Container = content.Container,
-                                    Date = content.Date,
-                                    Order = content.Order
-                                })
-                                .ToList()
-                        })
-                        .ToList()
-                })
+                .AsNoTracking()
+                .Where(p => !p.IsOrphan && p.Visible)
+                .OrderBy(p => p.SortOrder)
                 .ToListAsync();
 
-            return Ok(pages);
+            var rootPages = pages
+                .Where(p => p.ParentId == null)
+                .OrderBy(p => p.SortOrder)
+                .ToList();
+
+            return Ok(
+                rootPages
+                    .Select(page => BuildPageTree(page, pages))
+                    .ToList()
+            );
         }
 
         [HttpGet("colors")]

@@ -1,0 +1,85 @@
+﻿@model WebAppBackend.ViewModels.Pages.PageViewModel
+
+<div class="page-item" id="page-@Model.Id">
+
+    <div class="page-header">
+
+       
+
+        <div class="page-title">
+            @Html.DisplayFor(modelItem => Model.Title)
+
+            @if (!Model.Visible)
+            {
+                <span class="badge bg-warning text-dark ml-1">
+                    Invisible
+                </span>
+            }
+        </div>
+
+       
+
+
+        <div class="page-actions">
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil-square"></i>
+                Edit
+            </a>
+
+            <a asp-action="Details"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-info btn-sm">
+                <i class="bi bi-info-circle"></i>
+                Details
+            </a>
+
+            <a asp-action="Delete"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-trash"></i>
+                Delete
+            </a>
+            <button type="button"
+                    class="btn btn-outline-secondary btn-sm move-up"
+                    onclick="movePage(@Model.Id, 'up', this)"
+                    hidden="@(Model.CanMoveUp ? null : "hidden")">
+                <i class="bi bi-arrow-up"></i>
+            </button>
+
+            <button type="button"
+                    class="btn btn-outline-secondary btn-sm move-down"
+                    onclick="movePage(@Model.Id, 'down', this)"
+                    hidden="@(Model.CanMoveDown ? null : "hidden")">
+                <i class="bi bi-arrow-down"></i>
+            </button>
+
+        </div>
+    </div>
+
+    @if (Model.Date.HasValue)
+    {
+        <div class="page-date">
+            @Model.Date.Value.ToString("yyyy-MM-dd")
+        </div>
+    }
+
+    <div class="page-body">
+        @Html.Raw(Model.Body)
+    </div>
+
+    @if (Model.Children.Any())
+    {
+        <div class="page-children">
+
+            @foreach (var child in Model.Children)
+            {
+                <partial name="_PageRow" model="child" />
+            }
+
+        </div>
+    }
+
+</div>

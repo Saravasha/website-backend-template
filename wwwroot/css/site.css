@@ -26,3 +26,13 @@ html {
     height: auto;
     display: block;
 }
+
+.settings-image-preview {
+    width: 160px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: .25rem;
+    border: 1px solid #dee2e6;
+}

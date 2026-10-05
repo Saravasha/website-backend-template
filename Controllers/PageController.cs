@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using WebAppBackend.Data;
 using WebAppBackend.Models;
 using WebAppBackend.Services;
-using WebAppBackend.ViewModels;
+using WebAppBackend.ViewModels.Pages;
 
 
 namespace WebAppBackend.Controllers
@@ -16,137 +15,115 @@ namespace WebAppBackend.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IHtmlSanitizerService _htmlSanitizer;
+        private readonly PageService _pageService;
 
-        public PageController(ApplicationDbContext context, IHtmlSanitizerService htmlSanitizer)
+        public PageController(ApplicationDbContext context, IHtmlSanitizerService htmlSanitizer, PageService pageService)
         {
             _context = context;
             _htmlSanitizer = htmlSanitizer;
+            _pageService = pageService;
         }
 
-        private bool NeedsPageReIndex(List<Page> pages)
-        {
-            if (!pages.Any())
-            {
-                return false;
-            }
-
-            var highestOrder = pages.Max(p => p.Order);
-
-            // Example:
-            // 100 pages normally means highest order should be around 1000.
-            // If it exceeds 100x that, something is unusual.
-            var expectedMaximum = pages.Count * 10;
-
-            return highestOrder > expectedMaximum * 100;
-        }
-
-        private async Task ReIndexPagesAsync()
+        private async Task PopulateParentPageListAsync(int pageId, int? selectedParentId)
         {
             var pages = await _context.Pages
-                .OrderBy(p => p.Order)
-                .ToListAsync();
+        .Where(p => !p.IsOrphan)
+        .ToListAsync();
 
-            var order = 10;
-
-            foreach (var page in pages)
-            {
-                page.Order = order;
-                order += 10;
-            }
-
-            await _context.SaveChangesAsync();
+            ViewBag.ParentPageList =
+                _pageService.BuildParentPageList(
+                    pages,
+                    selectedParentId,
+                    pageId);
         }
 
 
         public async Task<IActionResult> Index()
         {
             var pages = await _context.Pages
-                .OrderBy(p => p.Order)
-                .Include(p => p.Chapters)
-                .ThenInclude(c => c.Contents)
+                .AsNoTracking()
                 .ToListAsync();
 
-            var firstOrder = pages.FirstOrDefault()?.Order;
-            var lastOrder = pages.LastOrDefault()?.Order;
-            var pageCount = pages.Count;
+            var rootPages = pages
+                .Where(p =>
+                    p.ParentId == null &&
+                    !p.IsOrphan)
+                .OrderBy(p => p.SortOrder)
+                .ToList();
 
-            var model = pages.Select((page, index) => new PageViewModel
+            var orphanedPages = pages
+                .Where(p => p.IsOrphan)
+                .OrderBy(p => p.SortOrder)
+                .ToList();
+
+            var model = new PageIndexViewModel
             {
-                Id = page.Id,
-                Title = page.Title,
-                Container = page.Container,
-                Order = page.Order,
+                Pages = rootPages
+                    .Select((page, index) => _pageService.BuildPageViewModel(
+                        page,
+                        pages,
+                        index,
+                        rootPages.Count))
+                    .ToList(),
 
-                CanMoveUp = pageCount > 1 && index > 0,
-                CanMoveDown = pageCount > 1 && index < pageCount - 1,
+                OrphanedPages = orphanedPages
+                    .Select((page, index) => _pageService.BuildPageViewModel(
+                        page,
+                        pages,
+                        index,
+                        orphanedPages.Count,
+                        true))
+                    .ToList(),
 
-                Chapters = page.Chapters ?? new List<Chapter>(),
-
-                Relationship = new RelationshipViewModel
-                {
-                    ChildLabel = "Chapters",
-                    Children = page.Chapters?
-                        .Select(c => c.Title)
-                        .ToList() ?? new List<string>(),
-
-                    GrandchildLabel = "Contents",
-                    Grandchildren = page.Chapters?
-                        .SelectMany(c => c.Contents ?? new List<Content>())
-                        .Select(c => c.Title)
-                        .ToList() ?? new List<string>()
-                }
-
-            }).ToList();
+                InvisiblePageCount = pages.Count(p => !p.Visible),
+                OrphanPageCount = pages.Count(p => p.IsOrphan)
+            };
 
             return View(model);
         }
 
-        // GET: ContentController/Details/5
+        // GET: PageController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var page = await _context.Pages
-                .Include(c => c.Chapters)
-                    .ThenInclude(ch => ch.Contents)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var pages = await _context.Pages
+                .AsNoTracking()
+                .ToListAsync();
+
+            var page = pages.FirstOrDefault(p => p.Id == id);
 
             if (page == null)
             {
                 return NotFound();
             }
 
-            var vm = new PageViewModel
-            {
-                Id = page.Id,
-                Title = page.Title,
-                Container = page.Container,
-                Order = page.Order,
-                Chapters = page.Chapters ?? new List<Chapter>(),
+            var siblingPages = pages
+                .Where(p =>
+                    p.ParentId == page.ParentId &&
+                    !p.IsOrphan)
+                .OrderBy(p => p.SortOrder)
+                .ToList();
 
-                Relationship = new RelationshipViewModel
-                {
-                    ChildLabel = "Chapters",
-                    Children = page.Chapters?
-                        .Select(c => c.Title)
-                        .ToList() ?? new(),
+            var index = siblingPages.FindIndex(p => p.Id == page.Id);
 
-                    GrandchildLabel = "Contents",
-                    Grandchildren = page.Chapters?
-                        .SelectMany(c => c.Contents ?? new())
-                        .Select(c => c.Title)
-                        .ToList() ?? new()
-                }
-            };
+            var vm = _pageService.BuildPageViewModel(
+                page,
+                pages,
+                index,
+                siblingPages.Count);
 
             return View(vm);
         }
 
-        //GET: PageController/Create
+        // GET: PageController/Create
         public async Task<IActionResult> Create()
         {
-            CreatePageViewModel cpvm = new CreatePageViewModel();
-            var chapters = _context.Chapters;
+            var cpvm = new CreatePageViewModel();
 
-            ViewBag.ChapterList = new MultiSelectList(chapters, "Id", "Title");
+            var pages = await _context.Pages
+      .Where(p => !p.IsOrphan)
+      .ToListAsync();
+
+            ViewBag.ParentPageList = _pageService.BuildParentPageList(pages);
 
             return View(cpvm);
         }
@@ -155,67 +132,64 @@ namespace WebAppBackend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreatePageViewModel page)
         {
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-
-                var existingPages = await _context.Pages
-                    .OrderBy(p => p.Order)
-                    .ToListAsync();
-
-                if (NeedsPageReIndex(existingPages))
+                if (page.ParentId.HasValue)
                 {
-                    await ReIndexPagesAsync();
+                    var parentExists = await _context.Pages
+                        .AnyAsync(p =>
+                            p.Id == page.ParentId.Value &&
+                            !p.IsOrphan);
 
-                    existingPages = await _context.Pages
-                        .OrderBy(p => p.Order)
-                        .ToListAsync();
+                    if (!parentExists)
+                    {
+                        ModelState.AddModelError(
+                            nameof(page.ParentId),
+                            "The selected parent page is invalid."
+                        );
+
+                        ViewBag.ParentPageList = new SelectList(
+                            await _context.Pages
+                                .Where(p => !p.IsOrphan)
+                                .OrderBy(p => p.SortOrder)
+                                .ToListAsync(),
+                            "Id",
+                            "Title",
+                            page.ParentId
+                        );
+
+                        return View(page);
+                    }
                 }
-
-                var highestOrder = existingPages.Any()
-                    ? existingPages.Max(p => p.Order)
-                    : 0;
-
-                //Sanitize the Container content before saving to the database
-                var sanitizedContainer = _htmlSanitizer.Sanitize(page.Container);
-
-                var pageToAdd = new Page
-                {
-                    Title = page.Title,
-                    Container = sanitizedContainer,
-                    Order = highestOrder + 10,
-                    Chapters = new List<Chapter>()
-                };
-
-                if (page.ChapterIds != null && page.ChapterIds.Any())
-                {
-                    var selectedChapters = await _context.Chapters
-                        .Where(c => page.ChapterIds.Contains(c.Id))
-                        .ToListAsync();
-
-                    pageToAdd.Chapters.AddRange(selectedChapters);
-                }
-
-
-                _context.Pages.Add(pageToAdd); ;
-
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
             }
 
-            // Repopulate ChapterList if validation fails
-            ViewBag.ChapterList = new MultiSelectList(await _context.Chapters.ToListAsync(), "Id", "Title", page.ChapterIds);
+            var highestOrder = await _context.Pages
+                .Where(p => p.ParentId == page.ParentId && !p.IsOrphan)
+                .Select(p => (int?)p.SortOrder)
+                .MaxAsync() ?? -1;
 
-            return View(page);
+            var pageToAdd = new Page
+            {
+                Title = page.Title,
+                Body = _htmlSanitizer.Sanitize(page.Body),
+                Date = page.Date,
+                ParentId = page.ParentId,
+                SortOrder = highestOrder + 1,
+                Visible = true,
+                IsOrphan = false
+            };
+
+            _context.Pages.Add(pageToAdd);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var page = await _context.Pages
-                .Include(p => p.Chapters)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (page == null)
@@ -223,28 +197,17 @@ namespace WebAppBackend.Controllers
                 return NotFound();
             }
 
-            foreach (var chapter in page.Chapters ?? [])
-            {
-                Console.WriteLine(
-                    $"Chapter ID: {chapter.Id}, Title: {chapter.Title}"
-                );
-            }
-
             var cpvm = new CreatePageViewModel
             {
                 Title = page.Title,
-                Container = page.Container,
-                ChapterIds = page.Chapters?
-                    .Select(c => c.Id)
-                    .ToList() ?? new List<int>()
+                Body = page.Body,
+                Date = page.Date,
+                ParentId = page.ParentId,
+                Visible = page.Visible
             };
 
-            ViewBag.ChapterList = new MultiSelectList(
-                await _context.Chapters.ToListAsync(),
-                "Id",
-                "Title",
-                cpvm.ChapterIds
-            );
+
+            await PopulateParentPageListAsync(id, cpvm.ParentId);
 
             return View(cpvm);
         }
@@ -253,38 +216,98 @@ namespace WebAppBackend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CreatePageViewModel page)
         {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.ChapterList = new MultiSelectList(await _context.Chapters.ToListAsync(), "Id", "Title", page.ChapterIds);
-                return View(page);
-            }
-
-            //Sanitize the Container content before saving to the database
-            var sanitizedContainer = _htmlSanitizer.Sanitize(page.Container);
-
-            var pageToEdit = await _context.Pages.Include(p => p.Chapters).FirstOrDefaultAsync(p => p.Id == id);
+            var pageToEdit = await _context.Pages
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pageToEdit == null)
             {
                 return NotFound();
             }
 
-            pageToEdit.Title = page.Title;
-            pageToEdit.Container = sanitizedContainer;
-
-            // Clear old contents
-            pageToEdit.Chapters.Clear();
-
-            if (page.ChapterIds != null && page.ChapterIds.Any())
+            if (!ModelState.IsValid)
             {
-                var selectedChapters = await _context.Chapters
-                    .Where(c => page.ChapterIds.Contains(c.Id))
-                    .ToListAsync();
+                await PopulateParentPageListAsync(id, page.ParentId);
 
-                foreach (var content in selectedChapters)
+                return View(page);
+            }
+
+            var oldParentId = pageToEdit.ParentId;
+            var newParentId = page.ParentId;
+
+            // Validate the new parent before making any changes.
+            if (newParentId.HasValue)
+            {
+                if (newParentId.Value == pageToEdit.Id)
                 {
-                    pageToEdit.Chapters.Add(content);
+                    ModelState.AddModelError(
+                        nameof(page.ParentId),
+                        "A page cannot be its own parent."
+                    );
                 }
+                else if (await _pageService.IsDescendantAsync(
+                    pageToEdit.Id,
+                    newParentId.Value))
+                {
+                    ModelState.AddModelError(
+                        nameof(page.ParentId),
+                        "A page cannot be moved under one of its descendants."
+                    );
+                }
+                else
+                {
+                    var parentExists = await _context.Pages
+                        .AnyAsync(p =>
+                            p.Id == newParentId.Value &&
+                            !p.IsOrphan);
+
+                    if (!parentExists)
+                    {
+                        ModelState.AddModelError(
+                            nameof(page.ParentId),
+                            "The selected parent page is invalid."
+                        );
+                    }
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await PopulateParentPageListAsync(id, page.ParentId);
+
+                return View(page);
+            }
+
+            // Update normal page properties.
+            pageToEdit.Title = page.Title;
+            pageToEdit.Body = _htmlSanitizer.Sanitize(page.Body);
+            pageToEdit.Date = page.Date;
+            pageToEdit.Visible = page.Visible;
+
+            // Parent has changed.
+            if (oldParentId != newParentId)
+            {
+                var highestOrder = await _context.Pages
+                    .Where(p =>
+                        p.ParentId == newParentId &&
+                        !p.IsOrphan &&
+                        p.Id != pageToEdit.Id)
+                    .Select(p => (int?)p.SortOrder)
+                    .MaxAsync() ?? -1;
+
+                pageToEdit.ParentId = newParentId;
+                pageToEdit.SortOrder = highestOrder + 1;
+
+                // Assigning a valid parent makes the page non-orphaned.
+                pageToEdit.IsOrphan = false;
+
+                await _pageService.ReIndexPagesAsync(oldParentId);
+                await _pageService.ReIndexPagesAsync(newParentId);
+            }
+            else if (pageToEdit.IsOrphan && newParentId.HasValue)
+            {
+                // Safety net for an orphan whose ParentId is somehow
+                // already populated.
+                pageToEdit.IsOrphan = false;
             }
 
             await _context.SaveChangesAsync();
@@ -300,8 +323,8 @@ namespace WebAppBackend.Controllers
             }
 
             var page = await _context.Pages
-                .Include(p => p.Chapters)
-                    .ThenInclude(ch => ch.Contents)
+                .AsNoTracking()
+                .Include(p => p.Children)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (page == null)
@@ -313,37 +336,33 @@ namespace WebAppBackend.Controllers
             {
                 Id = page.Id,
                 Title = page.Title,
-                Container = page.Container,
-                Order = page.Order,
-                Chapters = page.Chapters?.ToList() ?? new List<Chapter>(),
+                Body = page.Body,
+                ParentId = page.ParentId,
+                SortOrder = page.SortOrder,
 
-                Relationship = new RelationshipViewModel
-                {
-                    ChildLabel = "Chapters",
-                    Children = page.Chapters?
-                        .Select(c => c.Title)
-                        .ToList() ?? new(),
-
-                    GrandchildLabel = "Contents",
-                    Grandchildren = page.Chapters?
-                        .SelectMany(c => c.Contents ?? new())
-                        .Select(c => c.Title)
-                        .ToList() ?? new()
-                }
+                Children = page.Children
+                    .Where(child => !child.IsOrphan)
+                    .OrderBy(child => child.SortOrder)
+                    .Select(child => new PageViewModel
+                    {
+                        Id = child.Id,
+                        Title = child.Title,
+                        Body = child.Body,
+                        ParentId = child.ParentId,
+                        SortOrder = child.SortOrder
+                    })
+                    .ToList()
             };
 
             return View(vm);
         }
 
-        // POST: AssetController/Delete/5
-
-        // POST: Db/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var page = await _context.Pages
-                .Include(p => p.Chapters).ThenInclude(ch => ch.Contents)
+                .Include(p => p.Children)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (page == null)
@@ -351,18 +370,26 @@ namespace WebAppBackend.Controllers
                 return NotFound();
             }
 
-            foreach (var chapter in page.Chapters)
+            var parentId = page.ParentId;
+
+            foreach (var child in page.Children)
             {
-                chapter.PageId = null;
+                child.ParentId = null;
+                child.IsOrphan = true;
             }
 
             _context.Pages.Remove(page);
 
             await _context.SaveChangesAsync();
 
+            await _pageService.ReIndexPagesAsync(parentId);
+
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoveUp(int id)
         {
             var page = await _context.Pages
@@ -373,27 +400,29 @@ namespace WebAppBackend.Controllers
                 return NotFound();
             }
 
-
             var previousPage = await _context.Pages
-                .Where(p => p.Order < page.Order)
-                .OrderByDescending(p => p.Order)
+                .Where(p =>
+                    p.ParentId == page.ParentId &&
+                    !p.IsOrphan &&
+                    p.SortOrder < page.SortOrder)
+                .OrderByDescending(p => p.SortOrder)
                 .FirstOrDefaultAsync();
-
 
             if (previousPage != null)
             {
-                var tempOrder = page.Order;
+                var tempOrder = page.SortOrder;
 
-                page.Order = previousPage.Order;
-                previousPage.Order = tempOrder;
+                page.SortOrder = previousPage.SortOrder;
+                previousPage.SortOrder = tempOrder;
 
                 await _context.SaveChangesAsync();
             }
 
-
-            return Redirect($"{Url.Action(nameof(Index))}#{id}");
-
+            return Ok();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoveDown(int id)
         {
             var page = await _context.Pages
@@ -404,25 +433,25 @@ namespace WebAppBackend.Controllers
                 return NotFound();
             }
 
-
             var nextPage = await _context.Pages
-                .Where(p => p.Order > page.Order)
-                .OrderBy(p => p.Order)
+                .Where(p =>
+                    p.ParentId == page.ParentId &&
+                    !p.IsOrphan &&
+                    p.SortOrder > page.SortOrder)
+                .OrderBy(p => p.SortOrder)
                 .FirstOrDefaultAsync();
-
 
             if (nextPage != null)
             {
-                var tempOrder = page.Order;
+                var tempOrder = page.SortOrder;
 
-                page.Order = nextPage.Order;
-                nextPage.Order = tempOrder;
+                page.SortOrder = nextPage.SortOrder;
+                nextPage.SortOrder = tempOrder;
 
                 await _context.SaveChangesAsync();
             }
 
-
-            return Redirect($"{Url.Action(nameof(Index))}#{id}");
+            return Ok();
         }
     }
 }

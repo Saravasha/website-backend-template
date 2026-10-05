@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAppBackend.Data;
 using WebAppBackend.Models;
-using WebAppBackend.ViewModels;
+using WebAppBackend.ViewModels.Colors;
 
 namespace WebAppBackend.Controllers
 {

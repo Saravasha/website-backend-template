@@ -1,0 +1,53 @@
+﻿@model WebAppBackend.ViewModels.Pages.PageViewModel
+
+<tr class="table-hover" id="orphan-page-@Model.Id">
+
+    <td class="text-start align-middle">
+        <strong>
+            @Model.Title
+        </strong>
+    </td>
+
+    <td class="text-center align-middle">
+        @if (Model.Visible)
+        {
+            <span class="badge bg-success">
+                Visible
+            </span>
+        }
+        else
+        {
+            <span class="badge bg-warning text-dark">
+                Invisible
+            </span>
+        }
+    </td>
+
+    <td class="text-center align-middle">
+        <div class="btn-group btn-group-sm">
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-primary">
+                <i class="bi bi-pencil-square"></i>
+                Edit
+            </a>
+
+            <a asp-action="Details"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-info">
+                <i class="bi bi-info-circle"></i>
+                Details
+            </a>
+
+            <a asp-action="Delete"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-danger">
+                <i class="bi bi-trash"></i>
+                Delete
+            </a>
+
+        </div>
+    </td>
+
+</tr>
